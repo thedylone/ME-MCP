@@ -1,7 +1,8 @@
+from helpers.task import TaskBase
 import e
 
 
-class Task:
+class Task(TaskBase):
     def __init__(self) -> None:
         print("################")
         print("setting up Task F...")
@@ -41,15 +42,6 @@ class Task:
     def task7(self):
         self.C[-1] = self.F[-1] + self.C[0]
         print(f"task7: C: {self.C}")
-
-    def runTasks(self):
-        self.task1()
-        self.task2()
-        self.task3()
-        self.task4()
-        self.task5()
-        self.task6()
-        self.task7()
 
 
 if __name__ == "__main__":

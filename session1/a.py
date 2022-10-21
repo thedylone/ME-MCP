@@ -1,4 +1,7 @@
-class Task:
+from helpers.task import TaskBase
+
+
+class Task(TaskBase):
     def __init__(self) -> None:
         print("################")
         print("running Task A...")
@@ -18,10 +21,6 @@ class Task:
         y = -3
         z = 3 * x + y * y
         print(f"task2: z is {z}")
-
-    def runTasks(self):
-        self.task1()
-        self.task2()
 
 
 if __name__ == "__main__":

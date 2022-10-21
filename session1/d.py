@@ -1,4 +1,7 @@
-class Task:
+from helpers.task import TaskBase
+
+
+class Task(TaskBase):
     def __init__(self) -> None:
         print("################")
         print("running Task D...")
@@ -29,13 +32,6 @@ class Task:
         self.c = int(self.c)
         m = self.a + self.c
         print(f"m: {m}, type: {type(m)}")
-
-    def runTasks(self):
-        self.task1()
-        self.task2()
-        self.task3()
-        self.task4()
-        self.task5()
 
 
 if __name__ == "__main__":
