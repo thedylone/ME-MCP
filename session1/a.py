@@ -12,13 +12,13 @@ class Task(TaskBase):
         a += 1
         b = a
         c = a + b
-        self.log(f"task1: c is {c}")
+        self.log("task1", c=c)
 
     def task2(self):
         x = 11
         y = -3
         z = 3 * x + y * y
-        self.log(f"task2: z is {z}")
+        self.log("task2", z=z)
 
 
 if __name__ == "__main__":

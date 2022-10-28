@@ -12,9 +12,9 @@ class Task(TaskBase):
     def task2(self):
         try:
             f = self.a + self.b
-            self.log(f)
+            self.log("task2", f=f)
         except Exception as e:
-            self.log(f"task2: {e}")
+            self.log("task2", error=e)
 
     def task3(self):
         self.c = str(3)
@@ -23,13 +23,13 @@ class Task(TaskBase):
     def task4(self):
         g = self.a + self.c
         h = self.b + self.d
-        self.log(f"g: {g}, h: {h}")
+        self.log("task4", g=g, h=h)
 
     def task5(self):
         self.a = int(self.a)
         self.c = int(self.c)
         m = self.a + self.c
-        self.log(f"m: {m}, type: {type(m)}")
+        self.log("task5", m=m, m_type=type(m))
 
 
 if __name__ == "__main__":

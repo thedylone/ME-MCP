@@ -9,20 +9,20 @@ class Task(TaskBase):
         var = 3.14
         varcopy = var
         var *= 2
-        self.log(f"task1: var is {var} and varcopy is {varcopy}")
+        self.log("task1", var=var, varcopy=varcopy)
 
     def task2(self):
         MyPints = 3
         drink2more = 2
         MyPints += drink2more
         MyPints += drink2more
-        self.log(f"task2: MyPints is {MyPints}")
+        self.log("task2", MyPints=MyPints)
 
     def task3(self):
         Num = 3
         Den = 4
         Res = Num / Den
-        self.log(f"task3: Res is {Res}")
+        self.log("task3", Res=Res)
 
 
 if __name__ == "__main__":

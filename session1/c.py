@@ -9,12 +9,12 @@ class Task(TaskBase):
         self.a = 10
         self.b = 5
         self.a, self.b = self.b, self.a
-        self.log(f"task1: a is {self.a} and b is {self.b}")
+        self.log("task1", a=self.a, b=self.b)
 
     def task2(self):
         self.c = 20
         self.a, self.b, self.c = self.c, self.a, self.b
-        self.log(f"task2: a, b, c is {self.a, self.b, self.c}")
+        self.log("task2", a=self.a, b=self.b, c=self.c)
 
 
 if __name__ == "__main__":
