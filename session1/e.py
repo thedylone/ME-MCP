@@ -2,10 +2,10 @@ from helpers.task import TaskBase
 
 
 class Task(TaskBase):
-    def __init__(self) -> None:
-        print("################")
-        print("running Task E...")
-        print("################")
+    def __init__(self, name="") -> None:
+        super().__init__(name)
+        self.A = None
+        self.B = None
 
     def task1(self):
         self.A = list(range(10, 21))
@@ -30,6 +30,6 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task()
+    task = Task("E")
     task.runTasks()
     print(task.B[3])

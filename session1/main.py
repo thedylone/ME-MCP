@@ -9,7 +9,7 @@ import f
 def main():
     for q in [a, b, c, d, e, f]:
         print("\n")
-        task = q.Task()
+        task = q.Task(q.__name__)
         task.runTasks()
 
 

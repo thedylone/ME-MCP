@@ -3,13 +3,10 @@ import e
 
 
 class Task(TaskBase):
-    def __init__(self) -> None:
-        print("################")
-        print("setting up Task F...")
+    def __init__(self, name="") -> None:
+        super().__init__(name)
         TaskE = e.Task()
         TaskE.runTasks()
-        print("running Task F...")
-        print("################")
         self.A = TaskE.A
         self.B = TaskE.B
 
@@ -45,6 +42,6 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task()
+    task = Task("F")
     task.runTasks()
     print(task.C[2])

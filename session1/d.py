@@ -2,10 +2,8 @@ from helpers.task import TaskBase
 
 
 class Task(TaskBase):
-    def __init__(self) -> None:
-        print("################")
-        print("running Task D...")
-        print("################")
+    def __init__(self, name="") -> None:
+        super().__init__(name)
 
     def task1(self):
         self.a = str(2)
@@ -35,5 +33,5 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task()
+    task = Task("D")
     task.runTasks()
