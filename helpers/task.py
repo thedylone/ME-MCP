@@ -1,9 +1,10 @@
 class TaskBase:
-    def __init__(self, name) -> None:
+    def __init__(self, name, output=True) -> None:
         self.name = name
-        print("################")
-        print(f"running Task {self.name}...")
-        print("################")
+        self.output = output
+        self.log("################")
+        self.log(f"running Task {self.name}...")
+        self.log("################")
 
     def runTasks(self, start=1):
         i = start
@@ -13,5 +14,9 @@ class TaskBase:
                 i += 1
             except Exception:
                 break
-        print("done")
-        print("################")
+        self.log("done")
+        self.log("################")
+
+    def log(self, msg):
+        if self.output:
+            print(msg)
