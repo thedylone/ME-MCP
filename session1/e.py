@@ -2,26 +2,32 @@ from helpers.task import TaskBase
 
 
 class Task(TaskBase):
+    tasklist = []
+
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
         self.A = None
         self.B = None
 
+    @TaskBase.task_to_list(tasklist)
     def task1(self):
         self.A = list(range(10, 21))
         self.B = list(range(20, 31))
         self.log("task1", A=self.A)
         self.log("task1", B=self.B)
 
+    @TaskBase.task_to_list(tasklist)
     def task2(self):
         self.B[4] = self.A[2] + self.A[3]
         self.B[5] *= 2
         self.log("task2", B=self.B)
 
+    @TaskBase.task_to_list(tasklist)
     def task3(self):
         self.A[0], self.A[-1] = self.A[-1], self.A[0]
         self.log("task3", A=self.A)
 
+    @TaskBase.task_to_list(tasklist)
     def task4(self):
         i = 3
         j = 5

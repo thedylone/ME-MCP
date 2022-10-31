@@ -6,14 +6,16 @@ class TaskBase:
         self.log(f"running Task {self.name}...")
         self.log("################")
 
-    def runTasks(self, start=1):
-        i = start
-        while i > 0:
-            try:
-                eval(f"self.task{i}()")
-                i += 1
-            except Exception:
-                break
+    def task_to_list(list):
+        def subtask(func):
+            list.append(func)
+            return func
+
+        return subtask
+
+    def runTasks(self):
+        for task in self.tasklist:
+            task(self)
         self.log("done")
         self.log("################")
 

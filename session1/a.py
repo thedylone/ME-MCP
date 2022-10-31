@@ -2,9 +2,12 @@ from helpers.task import TaskBase
 
 
 class Task(TaskBase):
+    tasklist = []
+
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
 
+    @TaskBase.task_to_list(tasklist)
     def task1(self):
         a = 2
         b = 4
@@ -14,6 +17,7 @@ class Task(TaskBase):
         c = a + b
         self.log("task1", c=c)
 
+    @TaskBase.task_to_list(tasklist)
     def task2(self):
         x = 11
         y = -3
