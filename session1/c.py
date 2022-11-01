@@ -12,13 +12,13 @@ class Task(TaskBase):
         self.a = 10
         self.b = 5
         self.a, self.b = self.b, self.a
-        self.log("task1", a=self.a, b=self.b)
+        return {"a": self.a, "b": self.b}
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
         self.c = 20
         self.a, self.b, self.c = self.c, self.a, self.b
-        self.log("task2", a=self.a, b=self.b, c=self.c)
+        return {"a": self.a, "b": self.b, "c": self.c}
 
 
 if __name__ == "__main__":

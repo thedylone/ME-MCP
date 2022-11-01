@@ -15,7 +15,9 @@ class TaskBase:
 
     def runTasks(self):
         for task in self.tasklist:
-            task(self)
+            res = task(self)
+            if res:
+                self.log(task.__name__, **res)
         self.log("done")
         self.log("################")
 

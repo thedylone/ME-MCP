@@ -12,7 +12,7 @@ class Task(TaskBase):
         var = 3.14
         varcopy = var
         var *= 2
-        self.log("task1", var=var, varcopy=varcopy)
+        return {"var": var, "varcopy": varcopy}
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
@@ -20,14 +20,14 @@ class Task(TaskBase):
         drink2more = 2
         MyPints += drink2more
         MyPints += drink2more
-        self.log("task2", MyPints=MyPints)
+        return {"MyPints": MyPints}
 
     @TaskBase.task_to_list(tasklist)
     def task3(self):
         Num = 3
         Den = 4
         Res = Num / Den
-        self.log("task3", Res=Res)
+        return {"Res": Res}
 
 
 if __name__ == "__main__":

@@ -16,9 +16,9 @@ class Task(TaskBase):
     def task2(self):
         try:
             f = self.a + self.b
-            self.log("task2", f=f)
+            return {"f": f}
         except Exception as e:
-            self.log("task2", error=e)
+            return {"error": e}
 
     @TaskBase.task_to_list(tasklist)
     def task3(self):
@@ -29,14 +29,14 @@ class Task(TaskBase):
     def task4(self):
         g = self.a + self.c
         h = self.b + self.d
-        self.log("task4", g=g, h=h)
+        return {"g": g, "h": h}
 
     @TaskBase.task_to_list(tasklist)
     def task5(self):
         self.a = int(self.a)
         self.c = int(self.c)
         m = self.a + self.c
-        self.log("task5", m=m, m_type=type(m))
+        return {"m": m, "m_type": type(m)}
 
 
 if __name__ == "__main__":
