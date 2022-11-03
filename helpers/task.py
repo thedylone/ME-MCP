@@ -43,17 +43,24 @@ class TaskBase:
 
 
 def runSession(file):
+    """Run all tasks in all files in the same directory as file.
+    Ignores main.py and files starting with _."""
     from os.path import dirname, basename, isfile, join
     import glob
     import importlib
     import sys
+
     files = glob.glob(join(dirname(file), "*.py"))
     for f in files:
-        if isfile(f) and not f.endswith(("__init__.py", "main.py")):
-            importlib.import_module(basename(f)[:-3])
-            mod = sys.modules[basename(f)[:-3]]
-            try:
-                mod.Task(mod.__name__).runTasks()
-            except Exception as e:
-                print(e)
-            print("\n")
+        if not isfile(f):
+            continue
+        fname = basename(f)
+        if f.endswith("main.py") or fname.startswith("_"):
+            continue
+        importlib.import_module(fname[:-3])
+        mod = sys.modules[fname[:-3]]
+        try:
+            mod.Task(mod.__name__).runTasks()
+        except Exception as e:
+            print(e)
+        print("\n")
