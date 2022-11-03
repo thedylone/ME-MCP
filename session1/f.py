@@ -1,5 +1,5 @@
 from helpers.task import TaskBase
-import e
+import session1.e
 
 
 class Task(TaskBase):
@@ -7,7 +7,7 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        TaskE = e.Task(output=False)
+        TaskE = session1.e.Task(output=False)
         TaskE.runTasks()
         self.A = TaskE.A
         self.B = TaskE.B

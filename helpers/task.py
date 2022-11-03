@@ -42,23 +42,25 @@ class TaskBase:
         print(msg, var_str)
 
 
-def runSession(file):
-    """Run all tasks in all files in the same directory as file.
+def runSession(file, dir=""):
+    """Run all tasks in all files in directory of the file.
+    Optional argument dir can be used to specify a child directory.
     Ignores main.py and files starting with _."""
     from os.path import dirname, basename, isfile, join
     import glob
     import importlib
     import sys
 
-    files = glob.glob(join(dirname(file), "*.py"))
+    files = glob.glob(join(dirname(file), dir, "*.py"))
     for f in files:
         if not isfile(f):
             continue
         fname = basename(f)
         if f.endswith("main.py") or fname.startswith("_"):
             continue
-        importlib.import_module(fname[:-3])
-        mod = sys.modules[fname[:-3]]
+        modname = f"{dir}.{fname[:-3]}" if dir else fname[:-3]
+        importlib.import_module(modname)
+        mod = sys.modules[modname]
         try:
             mod.Task(mod.__name__).runTasks()
         except Exception as e:
