@@ -1,16 +1,20 @@
-import a
-import b
-import c
-import d
-import e
-import f
+from os.path import dirname, basename, isfile, join
+import glob
+import importlib
+import sys
 
 
 def main():
-    for q in [a, b, c, d, e, f]:
-        task = q.Task(q.__name__)
-        task.runTasks()
-        print("\n")
+    files = glob.glob(join(dirname(__file__), "*.py"))
+    for f in files:
+        if isfile(f) and not f.endswith(("__init__.py", "main.py")):
+            importlib.import_module(basename(f)[:-3])
+            mod = sys.modules[basename(f)[:-3]]
+            try:
+                mod.Task(mod.__name__).runTasks()
+            except Exception as e:
+                print(e)
+            print("\n")
 
 
 if __name__ == "__main__":
