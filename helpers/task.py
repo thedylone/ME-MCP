@@ -40,3 +40,20 @@ class TaskBase:
             var_list.append(f"{key} = {value}")
         var_str = "; ".join(var_list)
         print(msg, var_str)
+
+
+def runSession(file):
+    from os.path import dirname, basename, isfile, join
+    import glob
+    import importlib
+    import sys
+    files = glob.glob(join(dirname(file), "*.py"))
+    for f in files:
+        if isfile(f) and not f.endswith(("__init__.py", "main.py")):
+            importlib.import_module(basename(f)[:-3])
+            mod = sys.modules[basename(f)[:-3]]
+            try:
+                mod.Task(mod.__name__).runTasks()
+            except Exception as e:
+                print(e)
+            print("\n")
