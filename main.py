@@ -1,4 +1,5 @@
 import os
+import argparse
 from helpers.task import runSession
 
 
@@ -66,6 +67,17 @@ def cls():
 
 if __name__ == "__main__":
     try:
-        userSelectSession()
+        parser = argparse.ArgumentParser(description="run me1 sessions tasks")
+        parser.add_argument(
+            "-a",
+            "--all",
+            action="store_true",
+            help="run all tasks",
+        )
+        args = parser.parse_args()
+        if args.all:
+            runAllSessions()
+        else:
+            userSelectSession()
     except KeyboardInterrupt:
         print("Exiting...")
