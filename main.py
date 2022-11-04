@@ -18,10 +18,7 @@ def runAllSessions():
     """Run all sessions in the current directory."""
     sessions = getSessions()
     for session in sessions:
-        print(f"running {session}...")
-        print("~~~~~~~~~~~~~~~~~~~~")
-        runSession(__file__, session)
-        print("~~~~~~~~~~~~~~~~~~~~\n")
+        runSelectedSession(session)
 
 
 def runSelectedSession(session):
