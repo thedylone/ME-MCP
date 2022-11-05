@@ -14,6 +14,15 @@ class TaskBase:
 
         return subtask
 
+    @staticmethod
+    def intInput(varname):
+        """Get an integer input from the user."""
+        while True:
+            try:
+                return int(input(f"Enter {varname}: "))
+            except ValueError:
+                print("Invalid input. Please enter an integer.")
+
     def runTasks(self):
         """Run all tasks in the tasklist."""
         self.log("################")

@@ -61,8 +61,8 @@ class Task(TaskBase):
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
-        n = input("Enter number of rounds: ")
-        for _ in range(int(n)):
+        N = TaskBase.intInput("N")
+        for _ in range(int(N)):
             roll = self.task1().get("out", 0)
             if roll == 1:
                 self.X.score += 1
