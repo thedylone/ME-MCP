@@ -3,63 +3,95 @@ import argparse
 from helpers.task import runSession
 
 
-def getSessions():
-    """Get all sessions in the current directory."""
-    sessions = []
-    for file in os.listdir():
-        if not os.path.isdir(file):
-            continue
-        if file.startswith("session"):
-            sessions.append(file)
-    return sessions
+class SessionRunner:
+    inputs = None
 
+    def __init__(self):
+        pass
 
-def runAllSessions():
-    """Run all sessions in the current directory."""
-    sessions = getSessions()
-    for session in sessions:
-        runSelectedSession(session)
+    @staticmethod
+    def getSessions():
+        sessions = []
+        for file in os.listdir():
+            if not os.path.isdir(file):
+                continue
+            if file.startswith("session"):
+                sessions.append(file)
+        return sessions
 
+    @classmethod
+    def validateSession(cls, session):
+        if session not in cls.getSessions():
+            raise ValueError(f"Session {session} not found.")
+        return True
 
-def runSelectedSession(session):
-    """Run a selected session."""
-    print(f"running {session}...")
-    print("~~~~~~~~~~~~~~~~~~~~")
-    runSession(__file__, session)
-    print("~~~~~~~~~~~~~~~~~~~~\n")
+    def validateSessionDecorator(func):
+        def wrapper(self, session):
+            self.validateSession(session)
+            return func(self, session)
 
+        return wrapper
 
-def userSelectSession():
-    """Ask the user to select a session to run."""
-    str_input = False
-    sessions = getSessions()
-    print("Select a session to run:")
-    for i, session in enumerate(sessions):
-        print(f"{i+1}: {session}")
-    while True:
-        try:
-            selection = input("Select a session: ")
-            if selection.isdigit():
-                selection = int(selection)
-                if selection < 1 or selection > len(sessions):
+    @classmethod
+    def validateInput(cls, _input):
+        _input = _input.strip()
+        if not _input:
+            raise ValueError("Input cannot be empty.")
+        if _input == "all":
+            cls.inputs = _input
+            return True
+        inputs = _input.split(" ")
+        sessions = cls.getSessions()
+        for i, v in enumerate(inputs):
+            if v.isdigit():
+                v = int(v)
+                if v < 1 or v > len(sessions):
                     raise ValueError
-                break
-            elif selection in sessions:
-                str_input = True
-                break
-            else:
+                inputs[i] = sessions[v - 1]
+            elif v not in sessions:
                 raise ValueError
-        except ValueError:
-            print("Invalid selection.")
-    cls()
-    if str_input:
-        runSelectedSession(selection)
-    else:
-        runSelectedSession(sessions[selection - 1])
+        cls.inputs = inputs
+        return True
 
+    def validateInputDecorator(func):
+        def wrapper(self, _input):
+            self.validateInput(_input)
+            return func(self, _input)
 
-def cls():
-    os.system("cls" if os.name == "nt" else "clear")
+        return wrapper
+
+    @validateSessionDecorator
+    def _runSession(self, session):
+        print(f"running {session}...")
+        print("~~~~~~~~~~~~~~~~~~~~")
+        runSession(__file__, session)
+        print("~~~~~~~~~~~~~~~~~~~~\n")
+
+    def runAllSessions(self):
+        for session in self.getSessions():
+            self._runSession(session)
+
+    @validateInputDecorator
+    def runSessionInput(self, inputs):
+        if self.inputs == "all":
+            self.runAllSessions()
+        else:
+            for session in self.inputs:
+                self._runSession(session)
+
+    def userSelect(self):
+        print("Select a session to run:")
+        for i, session in enumerate(self.getSessions()):
+            print(f"{i + 1}. {session}")
+        print("all. Run all sessions")
+        while True:
+            try:
+                _input = input("Enter session(s) to run: ")
+                self.runSessionInput(_input)
+                break
+            except ValueError:
+                print("Invalid input. Please try again.")
+                continue
 
 
 if __name__ == "__main__":
@@ -73,8 +105,8 @@ if __name__ == "__main__":
         )
         args = parser.parse_args()
         if args.all:
-            runAllSessions()
+            SessionRunner().runAllSessions()
         else:
-            userSelectSession()
+            SessionRunner().userSelect()
     except KeyboardInterrupt:
         print("Exiting...")
