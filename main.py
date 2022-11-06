@@ -29,6 +29,7 @@ class SessionRunner:
 
     def validateSessionDecorator(func):
         """Decorator to validate a session name."""
+
         def wrapper(self, session):
             self.validateSession(session)
             return func(self, session)
@@ -36,29 +37,33 @@ class SessionRunner:
         return wrapper
 
     @classmethod
-    def validateInput(cls, _input):
-        """Validate an input string."""
-        _input = _input.strip()
-        if not _input:
-            raise ValueError("Input cannot be empty.")
-        if _input == "all":
-            cls.inputs = _input
+    def validateInput(cls, inputs):
+        """Validate a list of inputs."""
+        if "all" in inputs:
+            cls.inputs = ["all"]
             return True
-        inputs = _input.split(" ")
         sessions = cls.getSessions()
-        for i, v in enumerate(inputs):
-            if v.isdigit():
-                v = int(v)
-                if v < 1 or v > len(sessions):
-                    raise ValueError(f"Invalid input {v}.")
-                inputs[i] = sessions[v - 1]
-            elif v not in sessions:
-                raise ValueError(f"Invalid input {v}.")
-        cls.inputs = inputs
+        valid_inputs = []
+        for i in inputs:
+            if i == "":
+                continue
+            if i.isdigit():
+                i = int(i)
+                if i < 1 or i > len(sessions):
+                    raise ValueError(f"Invalid input {i}.")
+                valid_inputs.append(sessions[i - 1])
+            else:
+                if i not in sessions:
+                    raise ValueError(f"Invalid input {i}.")
+                valid_inputs.append(i)
+        if not valid_inputs:
+            raise ValueError("No valid inputs.")
+        cls.inputs = valid_inputs
         return True
 
     def validateInputDecorator(func):
         """Decorator to validate an input string."""
+
         def wrapper(self, _input):
             self.validateInput(_input)
             return func(self, _input)
@@ -81,7 +86,7 @@ class SessionRunner:
     @validateInputDecorator
     def runSessionInput(self, inputs):
         """Run a session based on user input."""
-        if self.inputs == "all":
+        if self.inputs == ["all"]:
             self.runAllSessions()
         else:
             for session in self.inputs:
@@ -95,12 +100,16 @@ class SessionRunner:
         print("all. Run all sessions")
         while True:
             try:
-                _input = input("Enter session(s) to run: ")
-                self.runSessionInput(_input)
+                inputs = input("Enter session(s) to run: ").split(" ")
+                self.runSessionInput(inputs)
                 break
             except ValueError:
                 print("Invalid input. Please try again.")
                 continue
+
+
+def flatten(list):
+    return [item for sublist in list for item in sublist]
 
 
 if __name__ == "__main__":
@@ -115,13 +124,15 @@ if __name__ == "__main__":
         parser.add_argument(
             "-s",
             "--session",
-            help="select a session to run",
+            nargs="*",
+            action="append",
+            help="select session(s) to run",
         )
         args = parser.parse_args()
         if args.all:
             SessionRunner().runAllSessions()
         elif args.session:
-            SessionRunner().runSessionInput(args.session)
+            SessionRunner().runSessionInput(flatten(args.session))
         else:
             SessionRunner().userSelect()
     except ValueError:
