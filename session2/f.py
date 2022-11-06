@@ -7,10 +7,6 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = 0
-
-    @TaskBase.task_to_list(tasklist)
-    def setup(self):
         self.N = TaskBase.intInput("N")
 
     @TaskBase.task_to_list(tasklist)

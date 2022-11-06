@@ -33,11 +33,6 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.X = None
-        self.Y = None
-
-    @TaskBase.task_to_list(tasklist)
-    def getPlayerNames(self):
         self.X = Player(input("Enter Player X's name: "))
         self.Y = Player(input("Enter Player Y's name: "))
 

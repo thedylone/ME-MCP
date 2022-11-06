@@ -3,6 +3,9 @@ class TaskBase:
         """Initialize a TaskBase object."""
         self.name = name
         self.output = output
+        self.log("################")
+        self.log(f"running Task {self.name}...")
+        self.log("################")
 
     def task_to_list(list):
         """Decorator to add a function to a list of tasks.
@@ -25,9 +28,6 @@ class TaskBase:
 
     def runTasks(self):
         """Run all tasks in the tasklist."""
-        self.log("################")
-        self.log(f"running Task {self.name}...")
-        self.log("################")
         for task in self.tasklist:
             res = task(self)
             if res:

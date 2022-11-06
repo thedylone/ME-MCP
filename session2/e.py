@@ -6,14 +6,10 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = 0
+        self.N = TaskBase.intInput("N")
         self.inside = 0
         self.inside_pts = []
         self.outside_pts = []
-
-    @TaskBase.task_to_list(tasklist)
-    def setup(self):
-        self.N = TaskBase.intInput("N")
 
     @TaskBase.task_to_list(tasklist)
     def task1(self, pts=None):
