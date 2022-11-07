@@ -3,63 +3,113 @@ import argparse
 from helpers.task import runSession
 
 
-def getSessions():
-    """Get all sessions in the current directory."""
-    sessions = []
-    for file in os.listdir():
-        if not os.path.isdir(file):
-            continue
-        if file.startswith("session"):
-            sessions.append(file)
-    return sessions
+class SessionRunner:
+    inputs = None
 
+    def __init__(self):
+        pass
 
-def runAllSessions():
-    """Run all sessions in the current directory."""
-    sessions = getSessions()
-    for session in sessions:
-        runSelectedSession(session)
+    @staticmethod
+    def getSessions():
+        """Get all sessions in the current directory."""
+        sessions = []
+        for file in os.listdir():
+            if not os.path.isdir(file):
+                continue
+            if file.startswith("session"):
+                sessions.append(file)
+        return sessions
 
+    @classmethod
+    def validateSession(cls, session):
+        """Validate a session name."""
+        if session not in cls.getSessions():
+            raise ValueError(f"Session {session} not found.")
+        return True
 
-def runSelectedSession(session):
-    """Run a selected session."""
-    print(f"running {session}...")
-    print("~~~~~~~~~~~~~~~~~~~~")
-    runSession(__file__, session)
-    print("~~~~~~~~~~~~~~~~~~~~\n")
+    def validateSessionDecorator(func):
+        """Decorator to validate a session name."""
 
+        def wrapper(self, session):
+            self.validateSession(session)
+            return func(self, session)
 
-def userSelectSession():
-    """Ask the user to select a session to run."""
-    str_input = False
-    sessions = getSessions()
-    print("Select a session to run:")
-    for i, session in enumerate(sessions):
-        print(f"{i+1}: {session}")
-    while True:
-        try:
-            selection = input("Select a session: ")
-            if selection.isdigit():
-                selection = int(selection)
-                if selection < 1 or selection > len(sessions):
-                    raise ValueError
-                break
-            elif selection in sessions:
-                str_input = True
-                break
+        return wrapper
+
+    @classmethod
+    def validateInput(cls, inputs):
+        """Validate a list of inputs."""
+        if "all" in inputs:
+            cls.inputs = ["all"]
+            return True
+        sessions = cls.getSessions()
+        valid_inputs = []
+        for i in inputs:
+            if i == "":
+                continue
+            if i.isdigit():
+                i = int(i)
+                if i < 1 or i > len(sessions):
+                    raise ValueError(f"Invalid input {i}.")
+                valid_inputs.append(sessions[i - 1])
             else:
-                raise ValueError
-        except ValueError:
-            print("Invalid selection.")
-    cls()
-    if str_input:
-        runSelectedSession(selection)
-    else:
-        runSelectedSession(sessions[selection - 1])
+                if i not in sessions:
+                    raise ValueError(f"Invalid input {i}.")
+                valid_inputs.append(i)
+        if not valid_inputs:
+            raise ValueError("No valid inputs.")
+        cls.inputs = valid_inputs
+        return True
+
+    def validateInputDecorator(func):
+        """Decorator to validate an input string."""
+
+        def wrapper(self, _input):
+            self.validateInput(_input)
+            return func(self, _input)
+
+        return wrapper
+
+    @validateSessionDecorator
+    def _runSession(self, session):
+        """Run a session."""
+        print(f"running {session}...")
+        print("~~~~~~~~~~~~~~~~~~~~")
+        runSession(__file__, session)
+        print("~~~~~~~~~~~~~~~~~~~~\n")
+
+    def runAllSessions(self):
+        """Run all sessions."""
+        for session in self.getSessions():
+            self._runSession(session)
+
+    @validateInputDecorator
+    def runSessionInput(self, inputs):
+        """Run a session based on user input."""
+        if self.inputs == ["all"]:
+            self.runAllSessions()
+        else:
+            for session in self.inputs:
+                self._runSession(session)
+
+    def userSelect(self):
+        """Prompt user to select a session."""
+        print("Select a session to run:")
+        for i, session in enumerate(self.getSessions()):
+            print(f"{i + 1}. {session}")
+        print("all. Run all sessions")
+        while True:
+            try:
+                inputs = input("Enter session(s) to run: ").split(" ")
+                self.runSessionInput(inputs)
+                break
+            except ValueError:
+                print("Invalid input. Please try again.")
+                continue
 
 
-def cls():
-    os.system("cls" if os.name == "nt" else "clear")
+def flatten(list):
+    return [item for sublist in list for item in sublist]
 
 
 if __name__ == "__main__":
@@ -71,10 +121,23 @@ if __name__ == "__main__":
             action="store_true",
             help="run all tasks",
         )
+        parser.add_argument(
+            "-s",
+            "--session",
+            nargs="*",
+            action="append",
+            help="select session(s) to run",
+        )
         args = parser.parse_args()
         if args.all:
-            runAllSessions()
+            SessionRunner().runAllSessions()
+        elif args.session:
+            SessionRunner().runSessionInput(flatten(args.session))
         else:
-            userSelectSession()
+            SessionRunner().userSelect()
+    except ValueError:
+        print("Invalid input. Please try again.")
+        exit(1)
     except KeyboardInterrupt:
         print("Exiting...")
+        exit(0)
