@@ -3,6 +3,9 @@ class TaskBase:
         """Initialize a TaskBase object."""
         self.name = name
         self.output = output
+        self.log("################")
+        self.log(f"running Task {self.name}...")
+        self.log("################")
 
     def task_to_list(list):
         """Decorator to add a function to a list of tasks.
@@ -14,11 +17,17 @@ class TaskBase:
 
         return subtask
 
+    @staticmethod
+    def intInput(varname):
+        """Get an integer input from the user."""
+        while True:
+            try:
+                return int(input(f"Enter {varname}: "))
+            except ValueError:
+                print("Invalid input. Please enter an integer.")
+
     def runTasks(self):
         """Run all tasks in the tasklist."""
-        self.log("################")
-        self.log(f"running Task {self.name}...")
-        self.log("################")
         for task in self.tasklist:
             res = task(self)
             if res:

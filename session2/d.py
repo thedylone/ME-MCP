@@ -33,11 +33,6 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.X = None
-        self.Y = None
-
-    @TaskBase.task_to_list(tasklist)
-    def getPlayerNames(self):
         self.X = Player(input("Enter Player X's name: "))
         self.Y = Player(input("Enter Player Y's name: "))
 
@@ -61,8 +56,8 @@ class Task(TaskBase):
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
-        n = input("Enter number of rounds: ")
-        for _ in range(int(n)):
+        N = TaskBase.intInput("N")
+        for _ in range(int(N)):
             roll = self.task1().get("out", 0)
             if roll == 1:
                 self.X.score += 1

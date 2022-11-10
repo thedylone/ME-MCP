@@ -6,39 +6,32 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = 0
+        self.N = TaskBase.intInput("N")
         self.inside = 0
-        self.outside = 0
         self.inside_pts = []
         self.outside_pts = []
-
-    @TaskBase.task_to_list(tasklist)
-    def getNPoints(self):
-        self.N = int(input("Enter number of points: "))
 
     @TaskBase.task_to_list(tasklist)
     def task1(self, pts=None):
         import random
 
-        for _ in range(int(self.N)):
+        for _ in range(self.N):
             x = random.random()
             y = random.random()
             if x * x + y * y <= 1:
                 self.inside += 1
                 if pts:
                     self.inside_pts.append((x, y))
-            else:
-                self.outside += 1
-                if pts:
-                    self.outside_pts.append((x, y))
-        pi = 4 * self.inside / (self.inside + self.outside)
+            elif pts:
+                self.outside_pts.append((x, y))
+        pi = 4 * self.inside / self.N
         return {"pi": pi}
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
         import matplotlib.pyplot as plt
 
-        self.getNPoints()
+        self.N = TaskBase.intInput("N")
         self.task1(pts=True)
 
         s = min(max(5000 / self.inside, 1), 50)

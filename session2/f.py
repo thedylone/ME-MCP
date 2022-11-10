@@ -7,16 +7,7 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = 0
-
-    @TaskBase.task_to_list(tasklist)
-    def getN(self):
-        while True:
-            try:
-                self.N = int(input("Enter N: "))
-                break
-            except ValueError:
-                print("Invalid input. Please enter an integer.")
+        self.N = TaskBase.intInput("N")
 
     @TaskBase.task_to_list(tasklist)
     def recursive(self):
