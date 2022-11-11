@@ -10,10 +10,10 @@ class SessionRunner:
         pass
 
     @staticmethod
-    def getSessions():
-        """Get all sessions in the current directory."""
+    def getSessions(dir=None):
+        """Get all sessions in a directory."""
         sessions = []
-        for file in os.listdir():
+        for file in os.listdir(dir):
             if not os.path.isdir(file):
                 continue
             if file.startswith("session"):
@@ -21,28 +21,27 @@ class SessionRunner:
         return sessions
 
     @classmethod
-    def validateSession(cls, session):
+    def validateSession(cls, session, dir=None):
         """Validate a session name."""
-        if session not in cls.getSessions():
+        if session not in cls.getSessions(dir):
             raise ValueError(f"Session {session} not found.")
         return True
 
     def validateSessionDecorator(func):
         """Decorator to validate a session name."""
-
-        def wrapper(self, session):
-            self.validateSession(session)
-            return func(self, session)
+        def wrapper(self, session, dir=None):
+            self.validateSession(session, dir)
+            return func(self, session, dir)
 
         return wrapper
 
     @classmethod
-    def validateInput(cls, inputs):
+    def validateInput(cls, inputs, dir=None):
         """Validate a list of inputs."""
         if "all" in inputs:
             cls.inputs = ["all"]
             return True
-        sessions = cls.getSessions()
+        sessions = cls.getSessions(dir)
         valid_inputs = []
         for i in inputs:
             if i == "":
@@ -64,33 +63,33 @@ class SessionRunner:
     def validateInputDecorator(func):
         """Decorator to validate an input string."""
 
-        def wrapper(self, _input):
-            self.validateInput(_input)
-            return func(self, _input)
+        def wrapper(self, _input, dir=None):
+            self.validateInput(_input, dir)
+            return func(self, _input, dir)
 
         return wrapper
 
     @validateSessionDecorator
-    def _runSession(self, session):
+    def _runSession(self, session, dir=None):
         """Run a session."""
         print(f"running {session}...")
         print("~~~~~~~~~~~~~~~~~~~~")
         runSession(__file__, session)
         print("~~~~~~~~~~~~~~~~~~~~\n")
 
-    def runAllSessions(self):
+    def runAllSessions(self, dir=None):
         """Run all sessions."""
-        for session in self.getSessions():
-            self._runSession(session)
+        for session in self.getSessions(dir):
+            self._runSession(session, dir)
 
     @validateInputDecorator
-    def runSessionInput(self, inputs):
+    def runSessionInput(self, inputs, dir=None):
         """Run a session based on user input."""
         if self.inputs == ["all"]:
-            self.runAllSessions()
+            self.runAllSessions(dir)
         else:
             for session in self.inputs:
-                self._runSession(session)
+                self._runSession(session, dir)
 
     def userSelect(self):
         """Prompt user to select a session."""
