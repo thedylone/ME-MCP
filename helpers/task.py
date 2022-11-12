@@ -18,12 +18,14 @@ class TaskBase:
         return subtask
 
     @staticmethod
-    def intInput(varname):
+    def intInput(varname, debug=False):
         """Get an integer input from the user."""
         while True:
             try:
                 return int(input(f"Enter {varname}: "))
             except ValueError:
+                if debug:
+                    raise ValueError
                 print("Invalid input. Please enter an integer.")
 
     def runTasks(self):
@@ -42,13 +44,14 @@ class TaskBase:
             return
         if not vars:
             print(msg)
-            return
+            return msg
         var_list = []
         msg += ":"
         for key, value in vars.items():
             var_list.append(f"{key} = {value}")
         var_str = "; ".join(var_list)
         print(msg, var_str)
+        return f"{msg} {var_str}"
 
 
 def runSession(file, dir=""):
@@ -60,13 +63,14 @@ def runSession(file, dir=""):
     import importlib
     import sys
 
-    files = glob.glob(join(dirname(file), dir, "*.py"))
+    files = sorted(glob.glob(join(dirname(file), dir, "*.py")))
     for f in files:
         if not isfile(f):
             continue
         fname = basename(f)
         if f.endswith("main.py") or fname.startswith("_"):
             continue
+        dir = dir.replace("/", ".").replace("\\", ".")
         modname = f"{dir}.{fname[:-3]}" if dir else fname[:-3]
         importlib.import_module(modname)
         mod = sys.modules[modname]
