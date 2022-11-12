@@ -19,7 +19,7 @@ class SessionRunner:
                 continue
             if f.startswith("session"):
                 sessions.append(f)
-        return sessions
+        return sorted(sessions)
 
     @classmethod
     def validateSession(cls, session, file=__file__):
