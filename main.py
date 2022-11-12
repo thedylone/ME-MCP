@@ -95,18 +95,21 @@ class SessionRunner:
             for session in self.inputs:
                 self._runSession(session, file)
 
-    def userSelect(self):
+    def userSelect(self, file=__file__, debug=False):
         """Prompt user to select a session."""
-        print("Select a session to run:")
-        for i, session in enumerate(self.getSessions()):
-            print(f"{i + 1}. {session}")
-        print("all. Run all sessions")
+        if not debug:
+            print("Select a session to run:")
+            for i, session in enumerate(self.getSessions(file)):
+                print(f"{i + 1}. {session}")
+            print("all. Run all sessions")
         while True:
             try:
                 inputs = input("Enter session(s) to run: ").split(" ")
-                self.runSessionInput(inputs)
+                self.runSessionInput(inputs, file)
                 break
             except ValueError:
+                if debug:
+                    raise ValueError
                 print("Invalid input. Please try again.")
                 continue
 

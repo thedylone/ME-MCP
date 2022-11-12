@@ -74,3 +74,56 @@ class TestMain:
         # # test invalid input
         with pytest.raises(ValueError):
             self.session_runner._runSession("session3", __file__)
+
+    def test_runAllSessions(self, capsys):
+        """Test runAllSessions method."""
+        self.session_runner.runAllSessions(__file__)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+
+    def test_runSessionInput(self, capsys):
+        """Test runSessionInput method."""
+        # test valid input
+        self.session_runner.runSessionInput(["session_test"], __file__)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+        # test invalid input
+        with pytest.raises(ValueError):
+            self.session_runner.runSessionInput(["3"], __file__)
+        # test all input
+        self.session_runner.runSessionInput(["all"], __file__)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+        # test empty input
+        with pytest.raises(ValueError):
+            self.session_runner.runSessionInput([""], __file__)
+
+    def test_userSelect(self, monkeypatch, capsys):
+        """Test userSelect method."""
+        # test valid integer input
+        monkeypatch.setattr("builtins.input", lambda _: "1")
+        self.session_runner.userSelect(file=__file__, debug=True)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+        # test invalid integer input
+        monkeypatch.setattr("builtins.input", lambda _: "3")
+        with pytest.raises(ValueError):
+            self.session_runner.userSelect(file=__file__, debug=True)
+        # test valid string input
+        monkeypatch.setattr("builtins.input", lambda _: "session_test")
+        self.session_runner.userSelect(file=__file__, debug=True)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+        # test invalid string input
+        monkeypatch.setattr("builtins.input", lambda _: "session3")
+        with pytest.raises(ValueError):
+            self.session_runner.userSelect(file=__file__, debug=True)
+        # test all input
+        monkeypatch.setattr("builtins.input", lambda _: "all")
+        self.session_runner.userSelect(file=__file__, debug=True)
+        capture = capsys.readouterr()
+        assert capture.out == "test\n\n\n"
+        # test empty input
+        monkeypatch.setattr("builtins.input", lambda _: "")
+        with pytest.raises(ValueError):
+            self.session_runner.userSelect(file=__file__, debug=True)
