@@ -63,7 +63,7 @@ def runSession(file, dir=""):
     import importlib
     import sys
 
-    files = glob.glob(join(dirname(file), dir, "*.py"))
+    files = sorted(glob.glob(join(dirname(file), dir, "*.py")))
     for f in files:
         if not isfile(f):
             continue
