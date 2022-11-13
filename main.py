@@ -1,6 +1,7 @@
-import os
 import argparse
-from helpers.task import runSession
+import os
+
+from helpers.task import run_session
 
 
 class SessionRunner:
@@ -10,7 +11,7 @@ class SessionRunner:
         pass
 
     @staticmethod
-    def getSessions(file=__file__):
+    def get_sessions(file=__file__):
         """Get all sessions in a directory."""
         sessions = []
         dir = os.path.dirname(file)
@@ -22,28 +23,28 @@ class SessionRunner:
         return sorted(sessions)
 
     @classmethod
-    def validateSession(cls, session, file=__file__):
+    def validate_session(cls, session, file=__file__):
         """Validate a session name."""
-        if session not in cls.getSessions(file):
+        if session not in cls.get_sessions(file):
             raise ValueError(f"Session {session} not found.")
         return True
 
-    def validateSessionDecorator(func):
+    def validate_session_decorator(func):
         """Decorator to validate a session name."""
 
         def wrapper(self, session, file=__file__):
-            self.validateSession(session, file)
+            self.validate_session(session, file)
             return func(self, session, file)
 
         return wrapper
 
     @classmethod
-    def validateInput(cls, inputs, file=__file__):
+    def validate_input(cls, inputs, file=__file__):
         """Validate a list of inputs."""
         if "all" in inputs:
             cls.inputs = ["all"]
             return True
-        sessions = cls.getSessions(file)
+        sessions = cls.get_sessions(file)
         valid_inputs = []
         for i in inputs:
             if i == "":
@@ -62,50 +63,50 @@ class SessionRunner:
         cls.inputs = valid_inputs
         return True
 
-    def validateInputDecorator(func):
+    def validate_input_decorator(func):
         """Decorator to validate an input string."""
 
         def wrapper(self, _input, file=__file__):
-            self.validateInput(_input, file)
+            self.validate_input(_input, file)
             return func(self, _input, file)
 
         return wrapper
 
-    @validateSessionDecorator
-    def _runSession(self, session, file=__file__):
+    @validate_session_decorator
+    def _run_session(self, session, file=__file__):
         """Run a session."""
         if file == __file__:
             print(f"running {session}...")
             print("~~~~~~~~~~~~~~~~~~~~")
-        runSession(file, session)
+        run_session(file, session)
         if file == __file__:
             print("~~~~~~~~~~~~~~~~~~~~\n")
 
-    def runAllSessions(self, file=__file__):
+    def run_all_sessions(self, file=__file__):
         """Run all sessions."""
-        for session in self.getSessions(file):
-            self._runSession(session, file)
+        for session in self.get_sessions(file):
+            self._run_session(session, file)
 
-    @validateInputDecorator
-    def runSessionInput(self, inputs, file=__file__):
+    @validate_input_decorator
+    def run_session_input(self, inputs, file=__file__):
         """Run a session based on user input."""
         if self.inputs == ["all"]:
-            self.runAllSessions(file)
+            self.run_all_sessions(file)
         else:
             for session in self.inputs:
-                self._runSession(session, file)
+                self._run_session(session, file)
 
-    def userSelect(self, file=__file__, debug=False):
+    def user_select(self, file=__file__, debug=False):
         """Prompt user to select a session."""
         if not debug:
             print("Select a session to run:")
-            for i, session in enumerate(self.getSessions(file)):
+            for i, session in enumerate(self.get_sessions(file)):
                 print(f"{i + 1}. {session}")
             print("all. Run all sessions")
         while True:
             try:
                 inputs = input("Enter session(s) to run: ").split(" ")
-                self.runSessionInput(inputs, file)
+                self.run_session_input(inputs, file)
                 break
             except ValueError:
                 if debug:
@@ -136,11 +137,11 @@ if __name__ == "__main__":
         )
         args = parser.parse_args()
         if args.all:
-            SessionRunner().runAllSessions()
+            SessionRunner().run_all_sessions()
         elif args.session:
-            SessionRunner().runSessionInput(flatten(args.session))
+            SessionRunner().run_session_input(flatten(args.session))
         else:
-            SessionRunner().userSelect()
+            SessionRunner().user_select()
     except ValueError:
         print("Invalid input. Please try again.")
         exit(1)

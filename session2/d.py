@@ -56,7 +56,7 @@ class Task(TaskBase):
 
     @TaskBase.task_to_list(tasklist)
     def task2(self):
-        N = TaskBase.intInput("N")
+        N = TaskBase.int_input("N")
         for _ in range(int(N)):
             roll = self.task1().get("out", 0)
             if roll == 1:
@@ -72,7 +72,7 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("D")
-    task.runTasks()
+    task.run_tasks()
 
     a = 0
     c = 1

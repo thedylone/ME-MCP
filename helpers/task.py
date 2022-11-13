@@ -18,7 +18,7 @@ class TaskBase:
         return subtask
 
     @staticmethod
-    def intInput(varname, debug=False):
+    def int_input(varname, debug=False):
         """Get an integer input from the user."""
         while True:
             try:
@@ -28,7 +28,7 @@ class TaskBase:
                     raise ValueError
                 print("Invalid input. Please enter an integer.")
 
-    def runTasks(self):
+    def run_tasks(self):
         """Run all tasks in the tasklist."""
         for task in self.tasklist:
             res = task(self)
@@ -54,14 +54,14 @@ class TaskBase:
         return f"{msg} {var_str}"
 
 
-def runSession(file, dir=""):
+def run_session(file, dir=""):
     """Run all tasks in all files in directory of the file.
     Optional argument dir can be used to specify a child directory.
     Ignores main.py and files starting with _."""
-    from os.path import dirname, basename, isfile, join
     import glob
     import importlib
     import sys
+    from os.path import basename, dirname, isfile, join
 
     files = sorted(glob.glob(join(dirname(file), dir, "*.py")))
     for f in files:
@@ -75,7 +75,7 @@ def runSession(file, dir=""):
         importlib.import_module(modname)
         mod = sys.modules[modname]
         try:
-            mod.Task(mod.__name__).runTasks()
+            mod.Task(mod.__name__).run_tasks()
         except Exception as e:
             print(e)
         print("\n")

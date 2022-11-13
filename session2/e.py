@@ -6,7 +6,7 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = TaskBase.intInput("N")
+        self.N = TaskBase.int_input("N")
         self.inside = 0
         self.inside_pts = []
         self.outside_pts = []
@@ -31,7 +31,7 @@ class Task(TaskBase):
     def task2(self):
         import matplotlib.pyplot as plt
 
-        self.N = TaskBase.intInput("N")
+        self.N = TaskBase.int_input("N")
         self.task1(pts=True)
 
         s = min(max(5000 / self.inside, 1), 50)
@@ -46,7 +46,7 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("E")
-    task.runTasks()
+    task.run_tasks()
 
     import random
 

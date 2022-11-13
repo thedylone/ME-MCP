@@ -28,5 +28,5 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("A")
-    task.runTasks()
+    task.run_tasks()
     print(task.C[9])

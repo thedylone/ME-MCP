@@ -7,7 +7,7 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.N = TaskBase.intInput("N")
+        self.N = TaskBase.int_input("N")
 
     @TaskBase.task_to_list(tasklist)
     def recursive(self):
@@ -81,5 +81,5 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("F")
-    task.runTasks()
+    task.run_tasks()
     print(len(task.from2()["primes"]))

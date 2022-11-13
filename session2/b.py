@@ -8,7 +8,7 @@ class Task(TaskBase):
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
         TaskA = session2.a.Task(output=False)
-        TaskA.runTasks()
+        TaskA.run_tasks()
         self.A = TaskA.A
         self.D = []
 
@@ -25,5 +25,5 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("B")
-    task.runTasks()
+    task.run_tasks()
     print(task.D[69])

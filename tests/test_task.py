@@ -30,20 +30,20 @@ class TestTaskBase:
         test_task2(self)
         assert test_list[1] == test_task2
 
-    def test_intInput(self, monkeypatch):
+    def test_int_input(self, monkeypatch):
         # test valid input
         monkeypatch.setattr("builtins.input", lambda x: "1")
-        assert TaskBase.intInput("test") == 1
+        assert TaskBase.int_input("test") == 1
 
         # test invalid input
         with pytest.raises(ValueError):
             monkeypatch.setattr("builtins.input", lambda x: "1.1")
-            TaskBase.intInput("test", True)
+            TaskBase.int_input("test", True)
 
         # test invalid alpha input
         with pytest.raises(ValueError):
             monkeypatch.setattr("builtins.input", lambda x: "a")
-            TaskBase.intInput("test", True)
+            TaskBase.int_input("test", True)
 
     def test_log(self):
         self.task_base.output = True
@@ -59,11 +59,11 @@ class TestTaskBase:
         assert self.task_base.log("test") is None
 
 
-def test_runSession(capsys):
+def test_run_session(capsys):
     # test runSession
-    from helpers.task import runSession
+    from helpers.task import run_session
 
     # test fixture
-    runSession(__file__, "fixtures/test_session")
+    run_session(__file__, "fixtures/test_session")
     capture = capsys.readouterr()
     assert capture.out == "test1\n\n\nfixtures.test_session.test2\n\n\n"

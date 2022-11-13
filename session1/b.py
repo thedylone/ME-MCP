@@ -32,4 +32,4 @@ class Task(TaskBase):
 
 if __name__ == "__main__":
     task = Task("B")
-    task.runTasks()
+    task.run_tasks()
