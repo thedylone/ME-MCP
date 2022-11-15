@@ -1,11 +1,40 @@
+"""finds all sessions in the current directory and runs them via input"""
+
 import argparse
 import os
+import sys
+import helpers.task as task
 
-from helpers.task import run_session
+
+def validate_session_decorator(func):
+    """Decorator to validate a session name."""
+
+    def wrapper(self, session, file=__file__):
+        self.validate_session(session, file)
+        return func(self, session, file)
+
+    return wrapper
+
+
+def validate_input_decorator(func):
+    """Decorator to validate an input string."""
+
+    def wrapper(self, _input, file=__file__):
+        self.validate_input(_input, file)
+        return func(self, _input, file)
+
+    return wrapper
+
+
+def flatten(list_of_lists):
+    """Flatten a list of lists."""
+    return [item for sublist in list_of_lists for item in sublist]
 
 
 class SessionRunner:
-    inputs = None
+    """Class to run a session."""
+
+    inputs = []
 
     def __init__(self):
         pass
@@ -14,12 +43,12 @@ class SessionRunner:
     def get_sessions(file=__file__):
         """Get all sessions in a directory."""
         sessions = []
-        dir = os.path.dirname(file)
-        for f in os.listdir(dir):
-            if not os.path.isdir(os.path.join(dir, f)):
+        directory = os.path.dirname(file)
+        for _file in os.listdir(directory):
+            if not os.path.isdir(os.path.join(directory, _file)):
                 continue
-            if f.startswith("session"):
-                sessions.append(f)
+            if _file.startswith("session"):
+                sessions.append(_file)
         return sorted(sessions)
 
     @classmethod
@@ -28,15 +57,6 @@ class SessionRunner:
         if session not in cls.get_sessions(file):
             raise ValueError(f"Session {session} not found.")
         return True
-
-    def validate_session_decorator(func):
-        """Decorator to validate a session name."""
-
-        def wrapper(self, session, file=__file__):
-            self.validate_session(session, file)
-            return func(self, session, file)
-
-        return wrapper
 
     @classmethod
     def validate_input(cls, inputs, file=__file__):
@@ -63,29 +83,20 @@ class SessionRunner:
         cls.inputs = valid_inputs
         return True
 
-    def validate_input_decorator(func):
-        """Decorator to validate an input string."""
-
-        def wrapper(self, _input, file=__file__):
-            self.validate_input(_input, file)
-            return func(self, _input, file)
-
-        return wrapper
-
     @validate_session_decorator
-    def _run_session(self, session, file=__file__):
+    def run_session(self, session, file=__file__):
         """Run a session."""
         if file == __file__:
             print(f"running {session}...")
             print("~~~~~~~~~~~~~~~~~~~~")
-        run_session(file, session)
+        task.run_session(file, session)
         if file == __file__:
             print("~~~~~~~~~~~~~~~~~~~~\n")
 
     def run_all_sessions(self, file=__file__):
         """Run all sessions."""
         for session in self.get_sessions(file):
-            self._run_session(session, file)
+            self.run_session(session, file)
 
     @validate_input_decorator
     def run_session_input(self, inputs, file=__file__):
@@ -94,7 +105,7 @@ class SessionRunner:
             self.run_all_sessions(file)
         else:
             for session in self.inputs:
-                self._run_session(session, file)
+                self.run_session(session, file)
 
     def user_select(self, file=__file__, debug=False):
         """Prompt user to select a session."""
@@ -108,15 +119,11 @@ class SessionRunner:
                 inputs = input("Enter session(s) to run: ").split(" ")
                 self.run_session_input(inputs, file)
                 break
-            except ValueError:
+            except ValueError as err:
                 if debug:
-                    raise ValueError
+                    raise ValueError from err
                 print("Invalid input. Please try again.")
                 continue
-
-
-def flatten(list):
-    return [item for sublist in list for item in sublist]
 
 
 if __name__ == "__main__":
@@ -144,7 +151,7 @@ if __name__ == "__main__":
             SessionRunner().user_select()
     except ValueError:
         print("Invalid input. Please try again.")
-        exit(1)
+        sys.exit(1)
     except KeyboardInterrupt:
         print("Exiting...")
-        exit(0)
+        sys.exit(0)

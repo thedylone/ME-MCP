@@ -1,43 +1,60 @@
-from helpers.task import TaskBase
+"""Finding Pi"""
+
+import random
+
+import matplotlib.pyplot as plt
+
+from helpers.task import TaskBase, task_to_list
 
 
 class Task(TaskBase):
+    """Finding Pi"""
+
     tasklist = []
+    inside = 0
+    inside_pts = []
+    outside_pts = []
 
-    def __init__(self, name="", output=True) -> None:
-        super().__init__(name, output)
-        self.N = TaskBase.int_input("N")
-        self.inside = 0
-        self.inside_pts = []
-        self.outside_pts = []
-
-    @TaskBase.task_to_list(tasklist)
+    @task_to_list(tasklist)
     def task1(self, pts=None):
-        import random
-
-        for _ in range(self.N):
-            x = random.random()
-            y = random.random()
-            if x * x + y * y <= 1:
+        """The value of p can be determined numerically by using
+        a technique based on random numbers. The area of the square
+        can be represented with a set of N random spatial points
+        generated within the enveloping square.
+        Some of these points, Nc, will reside into the circle too,
+        and would therefore represent the area of the circle.
+        Write a script to estimate the value of p with a number N of points."""
+        limit = TaskBase.int_input("N")
+        if limit < 1:
+            raise ValueError("N must be greater than 0")
+        for _ in range(limit):
+            x_coord = random.random()
+            y_coord = random.random()
+            if x_coord * x_coord + y_coord * y_coord <= 1:
                 self.inside += 1
                 if pts:
-                    self.inside_pts.append((x, y))
+                    self.inside_pts.append((x_coord, y_coord))
             elif pts:
-                self.outside_pts.append((x, y))
-        pi = 4 * self.inside / self.N
-        return {"pi": pi}
+                self.outside_pts.append((x_coord, y_coord))
+        if limit:
+            calc_pi = 4 * self.inside / limit
+        else:
+            calc_pi = 0
+        return {"pi": calc_pi}
 
-    @TaskBase.task_to_list(tasklist)
+    @task_to_list(tasklist)
     def task2(self):
-        import matplotlib.pyplot as plt
-
-        self.N = TaskBase.int_input("N")
+        """Amend the above script to plot all the random points generated.
+        Plot in red the points laying within the circle
+        and in blue the ones laying outside the circle.
+        Repeat the runs for the various N = 100, 1000, 10k.
+        The plot will make more explicit the concept beyond the method."""
         self.task1(pts=True)
 
-        s = min(max(5000 / self.inside, 1), 50)
+        scale = min(max(5000 / self.inside, 1), 50)
 
-        plt.scatter(*zip(*self.inside_pts), color="red", s=s)
-        plt.scatter(*zip(*self.outside_pts), color="blue", s=s)
+        plt.scatter(*zip(*self.inside_pts), color="red", s=scale)
+        plt.scatter(*zip(*self.outside_pts), color="blue", s=scale)
         plt.gca().set_aspect("equal", adjustable="box")
         plt.xlim(0, 1)
         plt.ylim(0, 1)
@@ -47,8 +64,5 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("E")
     task.run_tasks()
-
-    import random
-
     rand = [random.random() * 6 - 3 for _ in range(50)]
     print(min(rand), max(rand))

@@ -1,14 +1,16 @@
-from helpers.task import TaskBase
+"""Perform a list of instructions"""
+
+from helpers.task import TaskBase, task_to_list
 
 
 class Task(TaskBase):
+    """Perform a list of instructions"""
+
     tasklist = []
 
-    def __init__(self, name="", output=True) -> None:
-        super().__init__(name, output)
-
-    @TaskBase.task_to_list(tasklist)
+    @task_to_list(tasklist)
     def task1(self):
+        """Perform in Python the following set of instructions"""
         a = 2
         b = 4
         c = a + b
@@ -17,8 +19,9 @@ class Task(TaskBase):
         c = a + b
         return {"c": c}
 
-    @TaskBase.task_to_list(tasklist)
+    @task_to_list(tasklist)
     def task2(self):
+        """Calculate the value of z = 3x + y**2 for x = 11 and y = -3."""
         x = 11
         y = -3
         z = 3 * x + y * y

@@ -1,13 +1,54 @@
+"""test the main module."""
+
 from os.path import dirname, join
 
 import pytest
 
-from main import SessionRunner
+from main import (
+    validate_session_decorator,
+    validate_input_decorator,
+    SessionRunner,
+)
 
 FXT_DIR = join(dirname(__file__), "fixtures/test_root/")
 
 
-class TestMain:
+def test_validate_session_decorator():
+    """Test validate_session_decorator method."""
+
+    @validate_session_decorator
+    def test(self, session, file=None):
+        return True
+
+    # test valid session
+    assert test(SessionRunner, "session1", FXT_DIR) is True
+    # test invalid session
+    with pytest.raises(ValueError):
+        test(SessionRunner, "session3", FXT_DIR)
+
+
+def test_validate_input_decorator():
+    """Test validate_input_decorator method."""
+
+    @validate_input_decorator
+    def test(self, inputs, file=None):
+        return True
+
+    # test valid input
+    assert test(SessionRunner, ["1", "2"], FXT_DIR) is True
+    # test invalid input
+    with pytest.raises(ValueError):
+        test(SessionRunner, ["3"], FXT_DIR)
+    # test all input
+    assert test(SessionRunner, ["all"], FXT_DIR) is True
+    # test empty input
+    with pytest.raises(ValueError):
+        test(SessionRunner, [""], FXT_DIR)
+
+
+class TestSessionRunner:
+    """Test the SessionRunner class."""
+
     session_runner = SessionRunner()
 
     def test_get_sessions(self):
@@ -23,19 +64,6 @@ class TestMain:
         with pytest.raises(ValueError):
             self.session_runner.validate_session("session3", FXT_DIR)
 
-    def test_validate_session_decorator(self):
-        """Test validate_session_decorator method."""
-
-        @SessionRunner.validate_session_decorator
-        def test(self, session, dir=None):
-            return True
-
-        # test valid session
-        assert test(SessionRunner, "session1", FXT_DIR) is True
-        # test invalid session
-        with pytest.raises(ValueError):
-            test(SessionRunner, "session3", FXT_DIR)
-
     def test_validate_input(self):
         """Test validate_input method."""
         # test valid input
@@ -49,33 +77,15 @@ class TestMain:
         with pytest.raises(ValueError):
             SessionRunner.validate_input([""], FXT_DIR)
 
-    def test_validate_input_decorator(self):
-        """Test validate_input_decorator method."""
-
-        @SessionRunner.validate_input_decorator
-        def test(self, inputs, dir=None):
-            return True
-
-        # test valid input
-        assert test(SessionRunner, ["1", "2"], FXT_DIR) is True
-        # test invalid input
-        with pytest.raises(ValueError):
-            test(SessionRunner, ["3"], FXT_DIR)
-        # test all input
-        assert test(SessionRunner, ["all"], FXT_DIR) is True
-        # test empty input
-        with pytest.raises(ValueError):
-            test(SessionRunner, [""], FXT_DIR)
-
     def test_run_session(self, capsys):
-        """Test _run_session method."""
+        """Test run_session method."""
         # test valid input
-        self.session_runner._run_session("session_test", __file__)
+        self.session_runner.run_session("session_test", __file__)
         capture = capsys.readouterr()
         assert capture.out == "test\n\n\n"
         # # test invalid input
         with pytest.raises(ValueError):
-            self.session_runner._run_session("session3", __file__)
+            self.session_runner.run_session("session3", __file__)
 
     def test_run_all_sessions(self, capsys):
         """Test run_all_sessions method."""
@@ -83,7 +93,7 @@ class TestMain:
         capture = capsys.readouterr()
         assert capture.out == "test\n\n\n"
 
-    def test_run_sessionInput(self, capsys):
+    def test_run_session_input(self, capsys):
         """Test run_session_input method."""
         # test valid input
         self.session_runner.run_session_input(["session_test"], __file__)
