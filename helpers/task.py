@@ -1,5 +1,28 @@
+"""contains the helper functions for the tasks and sessions"""
+
+import glob
+import importlib
+import sys
+from os.path import basename, dirname, isfile, join
+
+
+def task_to_list(tasklist):
+    """Decorator to add a function to a list of tasks.
+    Function should return a dictionary of variables to log."""
+
+    def subtask(func):
+        tasklist.append(func)
+        return func
+
+    return subtask
+
+
 class TaskBase:
-    def __init__(self, name, output=True) -> None:
+    """Base class for tasks."""
+
+    tasklist = []
+
+    def __init__(self, name="", output=True) -> None:
         """Initialize a TaskBase object."""
         self.name = name
         self.output = output
@@ -7,28 +30,18 @@ class TaskBase:
         self.log(f"running Task {self.name}...")
         self.log("################")
 
-    def task_to_list(list):
-        """Decorator to add a function to a list of tasks.
-        Function should return a dictionary of variables to log."""
-
-        def subtask(func):
-            list.append(func)
-            return func
-
-        return subtask
-
     @staticmethod
-    def intInput(varname, debug=False):
+    def int_input(varname, debug=False):
         """Get an integer input from the user."""
         while True:
             try:
                 return int(input(f"Enter {varname}: "))
-            except ValueError:
+            except ValueError as err:
                 if debug:
-                    raise ValueError
+                    raise ValueError from err
                 print("Invalid input. Please enter an integer.")
 
-    def runTasks(self):
+    def run_tasks(self):
         """Run all tasks in the tasklist."""
         for task in self.tasklist:
             res = task(self)
@@ -37,45 +50,43 @@ class TaskBase:
         self.log("done")
         self.log("################")
 
-    def log(self, msg, **vars):
+    def log(self, msg, **kwargs):
         """Print a message with variables.
         Checks if output is enabled."""
         if not self.output:
             return
-        if not vars:
+        if not kwargs:
             print(msg)
             return msg
         var_list = []
         msg += ":"
-        for key, value in vars.items():
+        for key, value in kwargs.items():
             var_list.append(f"{key} = {value}")
         var_str = "; ".join(var_list)
         print(msg, var_str)
         return f"{msg} {var_str}"
 
 
-def runSession(file, dir=""):
+def run_session(file, subdir=""):
     """Run all tasks in all files in directory of the file.
     Optional argument dir can be used to specify a child directory.
     Ignores main.py and files starting with _."""
-    from os.path import dirname, basename, isfile, join
-    import glob
-    import importlib
-    import sys
 
-    files = sorted(glob.glob(join(dirname(file), dir, "*.py")))
-    for f in files:
-        if not isfile(f):
+    files = sorted(glob.glob(join(dirname(file), subdir, "*.py")))
+    for _file in files:
+        if not isfile(_file):
             continue
-        fname = basename(f)
-        if f.endswith("main.py") or fname.startswith("_"):
+        fname = basename(_file)
+        if _file.endswith("main.py") or fname.startswith("_"):
             continue
-        dir = dir.replace("/", ".").replace("\\", ".")
-        modname = f"{dir}.{fname[:-3]}" if dir else fname[:-3]
+        subdir = subdir.replace("/", ".").replace("\\", ".")
+        modname = f"{subdir}.{fname[:-3]}" if subdir else fname[:-3]
         importlib.import_module(modname)
         mod = sys.modules[modname]
         try:
-            mod.Task(mod.__name__).runTasks()
-        except Exception as e:
-            print(e)
+            mod.Task(mod.__name__).run_tasks()
+        except AttributeError as err:
+            print(err)
+        except ValueError as err:
+            print(err)
         print("\n")

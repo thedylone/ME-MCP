@@ -1,5 +1,6 @@
-from helpers.task import runSession
+"""Session 1: Variables and Statements"""
 
+from helpers.task import run_session
 
 if __name__ == "__main__":
-    runSession(__file__)
+    run_session(__file__)
