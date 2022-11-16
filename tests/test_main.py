@@ -4,11 +4,8 @@ from os.path import dirname, join
 
 import pytest
 
-from main import (
-    validate_session_decorator,
-    validate_input_decorator,
-    SessionRunner,
-)
+from main import (SessionRunner, validate_input_decorator,
+                  validate_session_decorator)
 
 FXT_DIR = join(dirname(__file__), "fixtures/test_root/")
 
