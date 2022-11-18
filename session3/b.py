@@ -9,12 +9,16 @@ class Task(TaskBase):
     tasklist = []
     marks = []
 
+    def import_marks(self):
+        """Import Marks.txt and save to self.marks"""
+        with open("session3/Marks.txt", "r", encoding="utf-8") as file:
+            self.marks = list(map(int, file.readlines()))
+
     @task_to_list(tasklist)
     def task1(self):
         """Write a script to compute the average mark
         and to find the maximum mark"""
-        with open("session3/Marks.txt", "r", encoding="utf-8") as file:
-            self.marks = list(map(int, file.readlines()))
+        self.import_marks()
         total = 0
         maximum = 0
         for mark in self.marks:
