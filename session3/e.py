@@ -23,15 +23,13 @@ class Task(TaskBase):
         finite approximation of such function at a given point xp, i.e. y(xp).
         Add terms of the series until approximation reaches a given accuracy.
         The accuracy is reached when |y_n+1 - y_n| < 10^-Q."""
-        prev = 0
-        current = 0
-        index = 0
-        while index == 0 or abs(current - prev) > self.accuracy:
-            prev = current
-            current += self.x_input**index
+        index = -1
+        term = 1
+        while term >= self.accuracy:
+            self.approx += term
             index += 1
-        self.approx = prev
-        return {"approximation": prev, "limit": index-1}
+            term *= self.x_input
+        return {"approximation": self.approx, "limit": index}
 
     @task_to_list(tasklist)
     def task2(self):
@@ -39,7 +37,7 @@ class Task(TaskBase):
         and display the error from the computed value.
         Observe the value of the error against 10^-Q."""
         true_y = 1 / (1 - self.x_input)
-        error = abs(true_y - self.approx)
+        error = self.approx - true_y
         return {"true_y": true_y, "error": error}
 
 

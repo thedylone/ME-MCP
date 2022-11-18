@@ -31,4 +31,4 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("B")
     task.run_tasks()
-    print(sum(task.marks[:50])/50)
+    print(sum(task.marks[:50]) / 50)

@@ -14,7 +14,7 @@ class Task(TaskBase):
     def task1(self):
         """Write a script to find out the sum: S = sum_{n=1}^{N} n^2"""
         upper = TaskBase.int_input("upper bound")
-        total = sum(num * num for num in range(1, upper+1))
+        total = sum(num * num for num in range(1, upper + 1))
         return {"total": total}
 
     @task_to_list(tasklist)

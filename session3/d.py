@@ -15,8 +15,7 @@ class Task(TaskBase):
 
     tasklist = []
     plots = [Plot(2), Plot(6), Plot(10), Plot(14)]
-    steps = int((0.8 - (-0.8)) // 0.01)
-    x_vals = [-0.8 + 0.01 * i for i in range(steps + 1)]
+    x_vals = list(map(lambda x: x / 100, range(-80, 80)))
 
     @task_to_list(tasklist)
     def task1(self):
@@ -44,9 +43,9 @@ class Task(TaskBase):
         """Evaluate the analytical value of y(x) in the same range of x
         and plot it, to compare the exact function with the truncated series"""
         true_y = [1 / (1 - x) for x in self.x_vals]
-        plt.plot(self.x_vals, true_y, label="True")
         for plot in self.plots:
             plt.plot(self.x_vals, plot.y_vals, label=f"N={plot}")
+        plt.plot(self.x_vals, true_y, label="True")
         plt.legend()
         plt.show()
 
