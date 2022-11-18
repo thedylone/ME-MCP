@@ -28,6 +28,7 @@ class TaskBase:
         self.output = output
         self.log("################")
         self.log(f"running Task {self.name}...")
+        self.log(self.__doc__)
         self.log("################")
 
     @staticmethod
@@ -41,12 +42,25 @@ class TaskBase:
                     raise ValueError from err
                 print("Invalid input. Please enter an integer.")
 
+    @staticmethod
+    def float_input(varname, debug=False):
+        """Get a float input from the user."""
+        while True:
+            try:
+                return float(input(f"Enter {varname}: "))
+            except ValueError as err:
+                if debug:
+                    raise ValueError from err
+                print("Invalid input. Please enter a float.")
+
     def run_tasks(self):
         """Run all tasks in the tasklist."""
         for task in self.tasklist:
+            self.log(task.__doc__)
             res = task(self)
             if res:
                 self.log(task.__name__, **res)
+            self.log("\n")
         self.log("done")
         self.log("################")
 
