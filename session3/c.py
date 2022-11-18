@@ -26,7 +26,7 @@ class Task(TaskBase):
                     index = i
                 self.cids.append(line)
         if index == -1:
-            raise ValueError("CID not found.")
+            return {"error": "CID not found"}
         return {"mark": self.marks[index]}
 
     @task_to_list(tasklist)
