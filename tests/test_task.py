@@ -2,7 +2,7 @@
 
 import pytest
 
-from helpers.task import TaskBase, run_session, task_to_list
+from helpers.task import TaskBase, run_session, task_to_list, get_input
 
 
 def test_task_to_list():
@@ -25,6 +25,57 @@ def test_task_to_list():
     assert test_list[1].__name__ == test_task2.__name__
 
 
+def test_get_input(monkeypatch):
+    """Test get_input method."""
+    # test successful input - int
+    monkeypatch.setattr("builtins.input", lambda x: "1")
+    assert get_input(int, "test") == 1
+
+    # test successful input - float
+    monkeypatch.setattr("builtins.input", lambda x: "1.1")
+    assert get_input(float, "test") == 1.1
+
+    # test successful input - str
+    monkeypatch.setattr("builtins.input", lambda x: "test")
+    assert get_input(str, "test") == "test"
+
+    # test successful input - bool
+    monkeypatch.setattr("builtins.input", lambda x: "True")
+    assert get_input(bool, "test") is True
+
+    # test successful input - list
+    monkeypatch.setattr("builtins.input", lambda x: "123")
+    assert get_input(list, "test") == ["1", "2", "3"]
+
+    # test successful input - tuple
+    monkeypatch.setattr("builtins.input", lambda x: "123")
+    assert get_input(tuple, "test") == ("1", "2", "3")
+
+    # test successful input - set
+    monkeypatch.setattr("builtins.input", lambda x: "1231")
+    assert get_input(set, "test") == {"1", "2", "3"}
+
+    # test failed input - int
+    monkeypatch.setattr("builtins.input", lambda x: "a")
+    with pytest.raises(ValueError):
+        get_input(int, "test", debug=True)
+
+    # test failed input - int out of range
+    monkeypatch.setattr("builtins.input", lambda x: "2")
+    with pytest.raises(ValueError):
+        get_input(int, "test", maxval=1, debug=True)
+
+    # test failed input - float
+    monkeypatch.setattr("builtins.input", lambda x: "a")
+    with pytest.raises(ValueError):
+        get_input(float, "test", debug=True)
+
+    # test failed input - float out of range
+    monkeypatch.setattr("builtins.input", lambda x: "2.1")
+    with pytest.raises(ValueError):
+        get_input(float, "test", maxval=2, debug=True)
+
+
 class TestTaskBase:
     """Test the TaskBase class."""
 
@@ -37,22 +88,6 @@ class TestTaskBase:
         assert self.task_base.output is False
         self.task_base.output = True
         assert self.task_base.output is True
-
-    def test_int_input(self, monkeypatch):
-        """Test int_input method."""
-        # test valid input
-        monkeypatch.setattr("builtins.input", lambda x: "1")
-        assert TaskBase.int_input("test") == 1
-
-        # test invalid input
-        with pytest.raises(ValueError):
-            monkeypatch.setattr("builtins.input", lambda x: "1.1")
-            TaskBase.int_input("test", True)
-
-        # test invalid alpha input
-        with pytest.raises(ValueError):
-            monkeypatch.setattr("builtins.input", lambda x: "a")
-            TaskBase.int_input("test", True)
 
     def test_log(self):
         """Test log method."""

@@ -1,7 +1,7 @@
 """Searching values in a list"""
 
 import session3.b
-from helpers.task import TaskBase, task_to_list
+from helpers.task import TaskBase, task_to_list, get_input
 
 
 class Task(TaskBase):
@@ -18,7 +18,7 @@ class Task(TaskBase):
         """Write a script to search and display the score of a student,
         specifying their CID from the keyboard."""
         index = -1
-        cid = TaskBase.int_input("CID")
+        cid = get_input(int, "CID")
         with open("session3/CID.txt", "r", encoding="utf-8") as file:
             for i, line in enumerate(file.readlines()):
                 line = int(line)

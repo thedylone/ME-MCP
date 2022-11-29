@@ -5,7 +5,7 @@ import time
 
 import numpy
 
-from helpers.task import TaskBase, task_to_list
+from helpers.task import TaskBase, task_to_list, get_input
 
 
 class Task(TaskBase):
@@ -15,7 +15,7 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.limit = TaskBase.int_input("N")
+        self.limit = get_input(int, "N")
 
     @task_to_list(tasklist)
     def recursive(self):

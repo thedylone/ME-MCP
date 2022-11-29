@@ -1,6 +1,6 @@
 """Series expansions"""
 
-from helpers.task import TaskBase, task_to_list
+from helpers.task import TaskBase, task_to_list, get_input
 
 
 class Task(TaskBase):
@@ -10,10 +10,8 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.x_input = TaskBase.float_input("xp")
-        if abs(self.x_input) > 1:
-            raise ValueError("xp must be in [-1, 1]")
-        self.q_input = TaskBase.int_input("Q")
+        self.x_input = get_input(float, "xp", minval=-1, maxval=1)
+        self.q_input = get_input(int, "Q")
         self.accuracy = 10**-self.q_input
         self.approx = 0
 

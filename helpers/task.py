@@ -17,6 +17,29 @@ def task_to_list(tasklist):
     return subtask
 
 
+def get_input(vartype, varname, minval=None, maxval=None, debug=False):
+    """Get input from user and convert to vartype.
+    Optional arguments minval and maxval can be used to specify a range."""
+    failed = False
+    while True:
+        failed = False
+        try:
+            value = vartype(input(f"{varname}: "))
+        except ValueError:
+            print(f"Invalid {varname}. Must be {vartype.__name__}.")
+            failed = True
+        if minval is not None and value < minval:
+            print(f"{varname} must be at least {minval}.")
+            failed = True
+        if maxval is not None and value > maxval:
+            print(f"{varname} must be at most {maxval}.")
+            failed = True
+        if not failed:
+            return value
+        if debug:
+            raise ValueError
+
+
 class TaskBase:
     """Base class for tasks."""
 
@@ -31,27 +54,27 @@ class TaskBase:
         self.log(self.__doc__)
         self.log("################")
 
-    @staticmethod
-    def int_input(varname, debug=False):
-        """Get an integer input from the user."""
-        while True:
-            try:
-                return int(input(f"Enter {varname}: "))
-            except ValueError as err:
-                if debug:
-                    raise ValueError from err
-                print("Invalid input. Please enter an integer.")
+    # @staticmethod
+    # def int_input(varname, debug=False):
+    #     """Get an integer input from the user."""
+    #     while True:
+    #         try:
+    #             return int(input(f"Enter {varname}: "))
+    #         except ValueError as err:
+    #             if debug:
+    #                 raise ValueError from err
+    #             print("Invalid input. Please enter an integer.")
 
-    @staticmethod
-    def float_input(varname, debug=False):
-        """Get a float input from the user."""
-        while True:
-            try:
-                return float(input(f"Enter {varname}: "))
-            except ValueError as err:
-                if debug:
-                    raise ValueError from err
-                print("Invalid input. Please enter a float.")
+    # @staticmethod
+    # def float_input(varname, debug=False):
+    #     """Get a float input from the user."""
+    #     while True:
+    #         try:
+    #             return float(input(f"Enter {varname}: "))
+    #         except ValueError as err:
+    #             if debug:
+    #                 raise ValueError from err
+    #             print("Invalid input. Please enter a float.")
 
     def run_tasks(self):
         """Run all tasks in the tasklist."""

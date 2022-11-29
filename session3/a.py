@@ -2,7 +2,7 @@
 
 import random
 
-from helpers.task import TaskBase, task_to_list
+from helpers.task import TaskBase, task_to_list, get_input
 
 
 class Task(TaskBase):
@@ -13,7 +13,7 @@ class Task(TaskBase):
     @task_to_list(tasklist)
     def task1(self):
         """Write a script to find out the sum: S = sum_{n=1}^{N} n^2"""
-        upper = TaskBase.int_input("upper bound")
+        upper = get_input(int, "upper bound")
         total = sum(num * num for num in range(1, upper + 1))
         return {"total": total}
 
@@ -21,16 +21,14 @@ class Task(TaskBase):
     def task2(self):
         """Write a script to throw N times a dice
         and compute the overall score."""
-        times = TaskBase.int_input("number of times")
+        times = get_input(int, "number of times")
         total = sum(random.randint(1, 6) for _ in range(times))
         return {"total": total}
 
     @task_to_list(tasklist)
     def task3(self):
         """Write a script to compute the factorial of an integer number."""
-        number = TaskBase.int_input("number")
-        if number < 0:
-            raise ValueError("Number must be positive.")
+        number = get_input(int, "number", minval=0)
         total = 1
         for num in range(2, number + 1):
             total *= num
