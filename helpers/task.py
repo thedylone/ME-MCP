@@ -17,6 +17,51 @@ def task_to_list(tasklist):
     return subtask
 
 
+class RangeValidator:
+    """Class to validate a range of values."""
+
+    def __init__(self, minval=None, minexc=False, maxval=None, maxexc=False):
+        self.minval = minval
+        self.minexc = minexc
+        self.maxval = maxval
+        self.maxexc = maxexc
+
+    def __call__(self, value):
+        if self.minval is not None:
+            if self.minexc:
+                if value <= self.minval:
+                    raise ValueError(f"Must be greater than {self.minval}")
+            elif value < self.minval:
+                raise ValueError(f"Must be at least {self.minval}")
+        if self.maxval is not None:
+            if self.maxexc:
+                if value >= self.maxval:
+                    raise ValueError(f"Must be less than {self.maxval}")
+            elif value > self.maxval:
+                raise ValueError(f"Must be at most {self.maxval}")
+        return value
+
+
+def get_input(
+    vartype,
+    varname,
+    validator=None,
+    debug=False,
+):
+    """Get input from user and convert to vartype.
+    Optional arguments minval and maxval can be used to specify a range."""
+    while True:
+        try:
+            value = vartype(input(f"{varname}: "))
+            if validator is not None:
+                value = validator(value)
+            return value
+        except ValueError as err:
+            if debug:
+                raise ValueError from err
+            print(err)
+
+
 class TaskBase:
     """Base class for tasks."""
 
@@ -28,25 +73,39 @@ class TaskBase:
         self.output = output
         self.log("################")
         self.log(f"running Task {self.name}...")
+        self.log(self.__doc__)
         self.log("################")
 
-    @staticmethod
-    def int_input(varname, debug=False):
-        """Get an integer input from the user."""
-        while True:
-            try:
-                return int(input(f"Enter {varname}: "))
-            except ValueError as err:
-                if debug:
-                    raise ValueError from err
-                print("Invalid input. Please enter an integer.")
+    # @staticmethod
+    # def int_input(varname, debug=False):
+    #     """Get an integer input from the user."""
+    #     while True:
+    #         try:
+    #             return int(input(f"Enter {varname}: "))
+    #         except ValueError as err:
+    #             if debug:
+    #                 raise ValueError from err
+    #             print("Invalid input. Please enter an integer.")
+
+    # @staticmethod
+    # def float_input(varname, debug=False):
+    #     """Get a float input from the user."""
+    #     while True:
+    #         try:
+    #             return float(input(f"Enter {varname}: "))
+    #         except ValueError as err:
+    #             if debug:
+    #                 raise ValueError from err
+    #             print("Invalid input. Please enter a float.")
 
     def run_tasks(self):
         """Run all tasks in the tasklist."""
         for task in self.tasklist:
+            self.log(task.__doc__)
             res = task(self)
             if res:
                 self.log(task.__name__, **res)
+            self.log("\n")
         self.log("done")
         self.log("################")
 

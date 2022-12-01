@@ -4,7 +4,7 @@ import random
 
 import matplotlib.pyplot as plt
 
-from helpers.task import TaskBase, task_to_list
+from helpers.task import TaskBase, task_to_list, get_input, RangeValidator
 
 
 class Task(TaskBase):
@@ -16,7 +16,7 @@ class Task(TaskBase):
     outside_pts = []
 
     @task_to_list(tasklist)
-    def task1(self, pts=None):
+    def task1(self, pts=False):
         """The value of p can be determined numerically by using
         a technique based on random numbers. The area of the square
         can be represented with a set of N random spatial points
@@ -24,9 +24,7 @@ class Task(TaskBase):
         Some of these points, Nc, will reside into the circle too,
         and would therefore represent the area of the circle.
         Write a script to estimate the value of p with a number N of points."""
-        limit = TaskBase.int_input("N")
-        if limit < 1:
-            raise ValueError("N must be greater than 0")
+        limit = get_input(int, "N", RangeValidator(1))
         for _ in range(limit):
             x_coord = random.random()
             y_coord = random.random()
