@@ -10,7 +10,9 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.x_input = get_input(float, "xp", minval=-1, maxval=1)
+        self.x_input = get_input(
+            float, "xp", minval=-1, min_exc=True, maxval=1, max_exc=True
+        )
         self.q_input = get_input(int, "Q")
         self.accuracy = 10**-self.q_input
         self.approx = 0
@@ -23,7 +25,7 @@ class Task(TaskBase):
         The accuracy is reached when |y_n+1 - y_n| < 10^-Q."""
         index = -1
         term = 1
-        while term >= self.accuracy:
+        while abs(term) >= self.accuracy:
             self.approx += term
             index += 1
             term *= self.x_input

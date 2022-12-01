@@ -17,7 +17,15 @@ def task_to_list(tasklist):
     return subtask
 
 
-def get_input(vartype, varname, minval=None, maxval=None, debug=False):
+def get_input(
+    vartype,
+    varname,
+    minval=None,
+    min_exc=False,
+    maxval=None,
+    max_exc=False,
+    debug=False,
+):
     """Get input from user and convert to vartype.
     Optional arguments minval and maxval can be used to specify a range."""
     failed = False
@@ -28,12 +36,24 @@ def get_input(vartype, varname, minval=None, maxval=None, debug=False):
         except ValueError:
             print(f"Invalid {varname}. Must be {vartype.__name__}.")
             failed = True
-        if minval is not None and value < minval:
-            print(f"{varname} must be at least {minval}.")
-            failed = True
-        if maxval is not None and value > maxval:
-            print(f"{varname} must be at most {maxval}.")
-            failed = True
+        if minval is not None:
+            if min_exc:
+                if value <= minval:
+                    print(f"Invalid {varname}. Must be greater than {minval}.")
+                    failed = True
+            else:
+                if value < minval:
+                    print(f"Invalid {varname}. Must be at least {minval}.")
+                    failed = True
+        if maxval is not None:
+            if max_exc:
+                if value >= maxval:
+                    print(f"Invalid {varname}. Must be less than {maxval}.")
+                    failed = True
+            else:
+                if value > maxval:
+                    print(f"Invalid {varname}. Must be at most {maxval}.")
+                    failed = True
         if not failed:
             return value
         if debug:
