@@ -2,7 +2,7 @@
 
 import random
 
-from helpers.task import TaskBase, task_to_list, get_input
+from helpers.task import TaskBase, task_to_list, get_input, RangeValidator
 
 
 class Task(TaskBase):
@@ -28,7 +28,7 @@ class Task(TaskBase):
     @task_to_list(tasklist)
     def task3(self):
         """Write a script to compute the factorial of an integer number."""
-        number = get_input(int, "number", minval=0)
+        number = get_input(int, "number", RangeValidator(0))
         total = 1
         for num in range(2, number + 1):
             total *= num

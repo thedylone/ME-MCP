@@ -2,7 +2,13 @@
 
 import pytest
 
-from helpers.task import TaskBase, run_session, task_to_list, get_input
+from helpers.task import (
+    TaskBase,
+    run_session,
+    task_to_list,
+    get_input,
+    RangeValidator,
+)
 
 
 def test_task_to_list():
@@ -23,6 +29,25 @@ def test_task_to_list():
     assert test_list[0].__name__ == test_task.__name__
     test_task2()
     assert test_list[1].__name__ == test_task2.__name__
+
+
+def test_range_validator():
+    """Test RangeValidator class."""
+    # test RangeValidator
+    validator = RangeValidator(minval=1, maxval=10)
+    assert validator(1) == 1
+    assert validator(10) == 10
+    with pytest.raises(ValueError):
+        validator(0)
+    with pytest.raises(ValueError):
+        validator(11)
+
+    # test RangeValidator exclusive
+    validator = RangeValidator(minval=1, minexc=True, maxval=10, maxexc=True)
+    with pytest.raises(ValueError):
+        validator(1)
+    with pytest.raises(ValueError):
+        validator(10)
 
 
 def test_get_input(monkeypatch):
@@ -60,20 +85,10 @@ def test_get_input(monkeypatch):
     with pytest.raises(ValueError):
         get_input(int, "test", debug=True)
 
-    # test failed input - int out of range
-    monkeypatch.setattr("builtins.input", lambda x: "2")
-    with pytest.raises(ValueError):
-        get_input(int, "test", maxval=1, debug=True)
-
     # test failed input - float
     monkeypatch.setattr("builtins.input", lambda x: "a")
     with pytest.raises(ValueError):
         get_input(float, "test", debug=True)
-
-    # test failed input - float out of range
-    monkeypatch.setattr("builtins.input", lambda x: "2.1")
-    with pytest.raises(ValueError):
-        get_input(float, "test", maxval=2, debug=True)
 
 
 class TestTaskBase:

@@ -4,7 +4,7 @@ import random
 
 import matplotlib.pyplot as plt
 
-from helpers.task import TaskBase, task_to_list, get_input
+from helpers.task import TaskBase, task_to_list, get_input, RangeValidator
 
 
 class Task(TaskBase):
@@ -24,7 +24,7 @@ class Task(TaskBase):
         Some of these points, Nc, will reside into the circle too,
         and would therefore represent the area of the circle.
         Write a script to estimate the value of p with a number N of points."""
-        limit = get_input(int, "N", minval=1)
+        limit = get_input(int, "N", RangeValidator(1))
         for _ in range(limit):
             x_coord = random.random()
             y_coord = random.random()

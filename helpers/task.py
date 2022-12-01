@@ -17,47 +17,49 @@ def task_to_list(tasklist):
     return subtask
 
 
+class RangeValidator:
+    """Class to validate a range of values."""
+
+    def __init__(self, minval=None, minexc=False, maxval=None, maxexc=False):
+        self.minval = minval
+        self.minexc = minexc
+        self.maxval = maxval
+        self.maxexc = maxexc
+
+    def __call__(self, value):
+        if self.minval is not None:
+            if self.minexc:
+                if value <= self.minval:
+                    raise ValueError(f"Must be greater than {self.minval}")
+            elif value < self.minval:
+                raise ValueError(f"Must be at least {self.minval}")
+        if self.maxval is not None:
+            if self.maxexc:
+                if value >= self.maxval:
+                    raise ValueError(f"Must be less than {self.maxval}")
+            elif value > self.maxval:
+                raise ValueError(f"Must be at most {self.maxval}")
+        return value
+
+
 def get_input(
     vartype,
     varname,
-    minval=None,
-    min_exc=False,
-    maxval=None,
-    max_exc=False,
+    validator=None,
     debug=False,
 ):
     """Get input from user and convert to vartype.
     Optional arguments minval and maxval can be used to specify a range."""
-    failed = False
     while True:
-        failed = False
         try:
             value = vartype(input(f"{varname}: "))
-        except ValueError:
-            print(f"Invalid {varname}. Must be {vartype.__name__}.")
-            failed = True
-        if minval is not None:
-            if min_exc:
-                if value <= minval:
-                    print(f"Invalid {varname}. Must be greater than {minval}.")
-                    failed = True
-            else:
-                if value < minval:
-                    print(f"Invalid {varname}. Must be at least {minval}.")
-                    failed = True
-        if maxval is not None:
-            if max_exc:
-                if value >= maxval:
-                    print(f"Invalid {varname}. Must be less than {maxval}.")
-                    failed = True
-            else:
-                if value > maxval:
-                    print(f"Invalid {varname}. Must be at most {maxval}.")
-                    failed = True
-        if not failed:
+            if validator is not None:
+                value = validator(value)
             return value
-        if debug:
-            raise ValueError
+        except ValueError as err:
+            if debug:
+                raise ValueError from err
+            print(err)
 
 
 class TaskBase:

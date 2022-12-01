@@ -1,6 +1,6 @@
 """Series expansions"""
 
-from helpers.task import TaskBase, task_to_list, get_input
+from helpers.task import TaskBase, task_to_list, get_input, RangeValidator
 
 
 class Task(TaskBase):
@@ -10,9 +10,8 @@ class Task(TaskBase):
 
     def __init__(self, name="", output=True) -> None:
         super().__init__(name, output)
-        self.x_input = get_input(
-            float, "xp", minval=-1, min_exc=True, maxval=1, max_exc=True
-        )
+        validator = RangeValidator(-1, True, 1, True)
+        self.x_input = get_input(float, "xp", validator)
         self.q_input = get_input(int, "Q")
         self.accuracy = 10**-self.q_input
         self.approx = 0
