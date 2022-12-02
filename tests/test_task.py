@@ -2,13 +2,8 @@
 
 import pytest
 
-from helpers.task import (
-    TaskBase,
-    run_session,
-    task_to_list,
-    get_input,
-    RangeValidator,
-)
+from helpers.task import (RangeValidator, TaskBase, get_input, run_session,
+                          task_to_list)
 
 
 def test_task_to_list():

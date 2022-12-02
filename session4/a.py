@@ -20,7 +20,7 @@ class Task(TaskBase):
         ):
             self.combined_list = list(
                 map(
-                    lambda x, y, z: (x.strip(), y.strip(), z.strip()),
+                    lambda x, y, z: (x.strip(), y.strip(), int(z)),
                     names,
                     groups,
                     marks,

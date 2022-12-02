@@ -1,6 +1,7 @@
 """Series expansion"""
 
 import matplotlib.pyplot as plt
+
 from helpers.task import TaskBase, task_to_list
 
 

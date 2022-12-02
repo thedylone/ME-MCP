@@ -36,7 +36,7 @@ class Task(TaskBase):
                 freq = 1
                 students = [tup[0]]
         self.occ_list.append((current_mark, freq, students))
-        return {"occ_list": self.occ_list[:5]}
+        return {"occ_list head": self.occ_list[:5]}
 
     @task_to_list(tasklist)
     def task2(self):
