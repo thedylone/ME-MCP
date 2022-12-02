@@ -4,7 +4,7 @@ import argparse
 import os
 import sys
 
-import helpers.task as task
+from helpers import task
 
 
 def validate_session_decorator(func):
