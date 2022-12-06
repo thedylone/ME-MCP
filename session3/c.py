@@ -1,7 +1,7 @@
 """Searching values in a list"""
 
 import session3.b
-from helpers.task import TaskBase, task_to_list, get_input
+from helpers.task import TaskBase, get_input, task_to_list
 
 
 class Task(TaskBase):
