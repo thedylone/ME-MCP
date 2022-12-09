@@ -48,7 +48,7 @@ class SessionRunner:
         for _file in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, _file)):
                 continue
-            if _file.startswith("session"):
+            if _file.startswith(("session", "consolidation")):
                 sessions.append(_file)
         return sorted(sessions)
 
