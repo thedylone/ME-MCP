@@ -5,6 +5,7 @@ import os
 import sys
 
 from helpers import task
+from string import Template
 
 
 def validate_session_decorator(func):
@@ -127,6 +128,25 @@ class SessionRunner:
                 continue
 
 
+def create_session():
+    while True:
+        session_name = input("Enter session name: ")
+        if session_name.strip():
+            break
+        print("Invalid name.")
+    # create directory
+    try:
+        os.makedirs(session_name)
+    except FileExistsError:
+        print("Session name already exists, exiting...")
+        sys.exit(1)
+    # create main.py
+    main_template = Template(open("helpers/templates/main.txt", "r").read())
+    with open(f"{session_name}/main.py", "w", encoding="utf-8") as f:
+        session_doc = input("Enter session description: ")
+        f.write(main_template.substitute(docstring=session_doc))
+
+
 if __name__ == "__main__":
     try:
         parser = argparse.ArgumentParser(description="run me1 sessions tasks")
@@ -143,9 +163,17 @@ if __name__ == "__main__":
             action="append",
             help="select session(s) to run",
         )
+        parser.add_argument(
+            "-c",
+            "--create",
+            action="store_true",
+            help="create session",
+        )
         args = parser.parse_args()
         if args.all:
             SessionRunner().run_all_sessions()
+        elif args.create:
+            create_session()
         elif args.session:
             SessionRunner().run_session_input(flatten(args.session))
         else:
