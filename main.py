@@ -135,16 +135,39 @@ def create_session():
             break
         print("Invalid name.")
     # create directory
+    create_dir_and_main(session_name)
+    # create tasks
+    while True:
+        create_task(session_name)
+        if input("Create another task? (y/n): ").lower() != "y":
+            break
+
+
+def create_dir_and_main(session_name):
+    """Create a session directory and main.py."""
+    # create directory
     try:
         os.makedirs(session_name)
     except FileExistsError:
         print("Session name already exists, exiting...")
         sys.exit(1)
     # create main.py
-    main_template = Template(open("helpers/templates/main.txt", "r").read())
+    with open("helpers/templates/main.txt", "r", encoding="utf-8") as f:
+        main_template = Template(f.read())
     with open(f"{session_name}/main.py", "w", encoding="utf-8") as f:
         session_doc = input("Enter session description: ")
         f.write(main_template.substitute(docstring=session_doc))
+
+
+def create_task(session_name):
+    """Create a task."""
+    task_name = input("Enter task name: ")
+    with open("helpers/templates/task.txt", "r") as f:
+        task_template = Template(f.read())
+    with open(f"{session_name}/{task_name}.py", "w", encoding="utf-8") as f:
+        task_doc = input("Enter task description: ")
+        task_d = {"docstring": task_doc, "name": task_name.title()}
+        f.write(task_template.substitute(task_d))
 
 
 if __name__ == "__main__":
