@@ -11,6 +11,8 @@ to run `main.py` in each session, the root directory should be installed as a pa
 
 ## creating a new session
 
+create a new session by running the `-c` or `--create` argument.
+
 each session can have as many tasks (`*.py`). any file that starts with an underscore `_` is ignored, as well as `main.py`, and will not be treated as a task.
 
 in each task, create a `Task` class with the `run_tasks()` method. the `Task` class can also inherit from the `helpers.task.TaskBase` class, which will have its own `run_tasks()` method and other methods too.
