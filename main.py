@@ -5,6 +5,7 @@ import os
 import sys
 
 from helpers import task
+from string import Template
 
 
 def validate_session_decorator(func):
@@ -126,6 +127,47 @@ class SessionRunner:
                 print("Invalid input. Please try again.")
                 continue
 
+    def create_session(self):
+        """Create a session."""
+        while True:
+            session_name = input("Enter session name: ")
+            if session_name.strip():
+                break
+            print("Invalid name.")
+        # create directory
+        self.create_dir_and_main(session_name)
+        # create tasks
+        while True:
+            self.create_task(session_name)
+            if input("Create another task? (y/n): ").lower() != "y":
+                break
+
+    def create_dir_and_main(self, session_name):
+        """Create a session directory and main.py."""
+        # create directory
+        try:
+            os.makedirs(session_name)
+        except FileExistsError:
+            print("Session name already exists, exiting...")
+            sys.exit(1)
+        # create main.py
+        with open("helpers/templates/main.txt", "r", encoding="utf-8") as f:
+            main_template = Template(f.read())
+        with open(f"{session_name}/main.py", "w", encoding="utf-8") as f:
+            session_doc = input("Enter session description: ")
+            f.write(main_template.substitute(docstring=session_doc))
+
+    @validate_session_decorator
+    def create_task(self, session, file=__file__):
+        """Create a task."""
+        task_name = input("Enter task name: ")
+        with open("helpers/templates/task.txt", "r") as f:
+            task_template = Template(f.read())
+        with open(f"{session}/{task_name}.py", "w", encoding="utf-8") as f:
+            task_doc = input("Enter task description: ")
+            task_d = {"docstring": task_doc, "name": task_name.title()}
+            f.write(task_template.substitute(task_d))
+
 
 if __name__ == "__main__":
     try:
@@ -143,15 +185,30 @@ if __name__ == "__main__":
             action="append",
             help="select session(s) to run",
         )
+        parser.add_argument(
+            "-c",
+            "--create",
+            action="store_true",
+            help="create session",
+        )
+        parser.add_argument(
+            "-t",
+            "--task",
+            help="create task in existing session",
+        )
         args = parser.parse_args()
         if args.all:
             SessionRunner().run_all_sessions()
+        elif args.create:
+            SessionRunner().create_session()
+        elif args.task:
+            SessionRunner().create_task(args.task)
         elif args.session:
             SessionRunner().run_session_input(flatten(args.session))
         else:
             SessionRunner().user_select()
-    except ValueError:
-        print("Invalid input. Please try again.")
+    except ValueError as err:
+        print(err)
         sys.exit(1)
     except KeyboardInterrupt:
         print("Exiting...")
