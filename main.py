@@ -37,6 +37,7 @@ class SessionRunner:
     """Class to run a session."""
 
     inputs = []
+    session_prefix = ("session", "consolidation")
 
     def __init__(self):
         pass
@@ -49,7 +50,7 @@ class SessionRunner:
         for _file in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, _file)):
                 continue
-            if _file.startswith(("session", "consolidation")):
+            if _file.startswith(SessionRunner.session_prefix):
                 sessions.append(_file)
         return sorted(sessions)
 
@@ -129,11 +130,7 @@ class SessionRunner:
 
     def create_session(self):
         """Create a session."""
-        while True:
-            session_name = input("Enter session name: ")
-            if session_name.strip():
-                break
-            print("Invalid name.")
+        session_name = input("Enter session name: ")
         # create directory
         self.create_dir_and_main(session_name)
         # create tasks
@@ -144,12 +141,15 @@ class SessionRunner:
 
     def create_dir_and_main(self, session_name):
         """Create a session directory and main.py."""
+        if not session_name.startswith(SessionRunner.session_prefix):
+            print(f"Name must start with {SessionRunner.session_prefix}")
+            raise ValueError(f"Invalid session name {session_name}.")
         # create directory
         try:
             os.makedirs(session_name)
         except FileExistsError:
             print("Session name already exists, exiting...")
-            sys.exit(1)
+            raise ValueError(f"Invalid session name {session_name}.")
         # create main.py
         with open("helpers/templates/main.txt", "r", encoding="utf-8") as f:
             main_template = Template(f.read())
