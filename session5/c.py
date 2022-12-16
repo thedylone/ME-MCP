@@ -43,3 +43,6 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("C")
     task.run_tasks()
+    with open("session5/Set.txt", "r", encoding="utf-8") as f:
+        data = [int(line) for line in f]
+    print(Task.sort_ascending(data)[124])

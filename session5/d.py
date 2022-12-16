@@ -88,11 +88,10 @@ class Task(TaskBase):
         self.failed = False
         self.failed_twice = False
 
-        self.angle = math.radians(float(input("Enter the angle: ")))
-        self.vel = float(input("Enter the velocity: "))
         self.fig, self.ax = plt.subplots()
         self.anim = FuncAnimation(self.fig, self.update, interval=10)
         plt.show()
+        return not self.failed
 
     @task_to_list(tasklist)
     def task1(self):
@@ -106,6 +105,8 @@ class Task(TaskBase):
         self.ax.add_artist(plt.Circle(self.target, self.radius, color="g"))
         plt.show()
         while True:
+            self.angle = math.radians(float(input("Enter the angle: ")))
+            self.vel = float(input("Enter the velocity: "))
             self.attempt()
             if self.failed:
                 print("You missed!")
@@ -117,3 +118,17 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("D")
     task.run_tasks()
+    task.target = (0.3, 0.7)
+    task.radius = 0.01
+    combinations = [
+        (73, 21),
+        (60, 21),
+        (67, 21),
+        (63, 21),
+    ]
+    for angle, vel in combinations:
+        task.angle = math.radians(angle)
+        task.vel = vel
+        if task.attempt():
+            print(f"Angle: {angle}°, velocity: {vel} m/s")
+            break

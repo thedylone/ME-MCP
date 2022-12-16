@@ -11,7 +11,8 @@ class Task(TaskBase):
 
     tasklist = []
 
-    def exp_series(self, x_values, N):
+    @staticmethod
+    def exp_series(x_values, N):
         """Approximate e^x by the series expansion sum_{i=0}^{N} x^i/i!
         in the range x = [a:b]"""
         y_values = [
@@ -36,3 +37,4 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("B")
     task.run_tasks()
+    print(Task.exp_series([2.5], 18))
