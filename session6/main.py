@@ -1,4 +1,4 @@
-"""Recursive functions and Consolidation"""
+"""Session 6: Recursive functions and Consolidation"""
 
 from helpers.task import run_session
 
