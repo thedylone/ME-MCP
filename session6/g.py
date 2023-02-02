@@ -47,7 +47,7 @@ class Task(TaskBase):
         a list of values and returns the same list sorted in ascending values,
         by using the Merge Sort method algorithm."""
         values = get_input(str, "Enter values separated by commas").split(",")
-        values = [float(val) for val in values]
+        values = [int(val) for val in values]
         return {"sorted": Task.mergesort(values)}
 
 
