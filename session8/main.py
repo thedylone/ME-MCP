@@ -1,4 +1,4 @@
-"""Session 7: Object Oriented Programming"""
+"""Session 8: Object Oriented Programming (Part II)"""
 
 from helpers.task import run_session
 
