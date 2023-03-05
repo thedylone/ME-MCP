@@ -7,13 +7,13 @@ class Task(TaskBase):
     """Defining and manipulating matrices"""
 
     tasklist = []
+    matrix_H = []
+    matrix_S = []
 
     @task_to_list(tasklist)
     def task1(self):
         """Create a matrix H of zeros with dimensions 30 x 20"""
-        self.matrix_H = []
-        for i in range(30):
-            self.matrix_H.append([0] * 20)
+        self.matrix_H = [[0] * 20 for _ in range(30)]
         return {"H": self.matrix_H}
 
     @task_to_list(tasklist)
@@ -43,11 +43,9 @@ class Task(TaskBase):
         ]
         """
         dimension = get_input(int, "dimension")
-        self.matrix_S = []
         for i in range(dimension):
             row = [0] * dimension
-            row[i] = 1
-            row[-i-1] = 1
+            row[i] = row[-i - 1] = 1
             self.matrix_S.append(row)
         return {"S": self.matrix_S}
 
