@@ -43,7 +43,8 @@ class Task(TaskBase):
     def task2(self):
         """Write a function MatSum, that receives two matrices, A and B,
         and returns the sum of them"""
-        return {"A + B": self.matsum(self.matrix_A, self.matrix_B)}
+        self.matrix_C = self.matsum(self.matrix_A, self.matrix_B)
+        return {"A + B": self.matrix_C}
 
     @staticmethod
     def scalar_mult(scalar, matrix):
@@ -76,3 +77,5 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("D")
     task.run_tasks()
+    print(task.matrix_A[3][4])
+    print(task.matrix_C[10][34])

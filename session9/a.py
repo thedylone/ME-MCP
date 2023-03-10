@@ -53,7 +53,7 @@ class Task(TaskBase):
         """Generate an array x of numbers in the range [-5 : 5]
         with the following steps:
             dx = 0.5 in -5 <= x <= -2,
-            dx = 0.05 in  -2 < x < 3,
+            dx = 0.05 in -2 < x < 3,
             dx = 0.5 in 3 <= x <= 5"""
         self.x_vals = np.concatenate(
             (
@@ -80,3 +80,4 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("A")
     task.run_tasks()
+    print(task.x_vals[14])

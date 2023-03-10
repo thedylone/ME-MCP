@@ -13,7 +13,7 @@ class Task(TaskBase):
     def matmat(matrix_A, matrix_B):
         """Multiply two matrices. Return 0 if the sizes are incompatible."""
         if len(matrix_A[0]) != len(matrix_B):
-            return 0
+            return [[0]]
         return [
             [
                 sum(a * b for a, b in zip(row_A, col_B))
@@ -33,6 +33,7 @@ class Task(TaskBase):
         taskD.task1()
         matrix_A = taskD.matrix_A
         matrix_B = taskD.matrix_B
+        self.matrix_P = self.matmat(matrix_A, matrix_B)
         return {
             "A * B == B * A": self.matmat(matrix_A, matrix_B)
             == self.matmat(matrix_B, matrix_A)
@@ -42,3 +43,4 @@ class Task(TaskBase):
 if __name__ == "__main__":
     task = Task("E")
     task.run_tasks()
+    print(task.matrix_P[22][22])
