@@ -4,7 +4,7 @@ import argparse
 import os
 import sys
 
-from helpers import task
+from helpers.session import SessionBase
 from string import Template
 
 
@@ -92,7 +92,7 @@ class SessionRunner:
         if file == __file__:
             print(f"running {session}...")
             print("~~~~~~~~~~~~~~~~~~~~")
-        task.run_session(file, session)
+        SessionBase.run_session(file, session)
         if file == __file__:
             print("~~~~~~~~~~~~~~~~~~~~\n")
 
