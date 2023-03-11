@@ -1,0 +1,98 @@
+"""Defining and manipulating matrices"""
+
+import numpy as np
+from helpers.task import TaskBase, task_to_list, get_input
+
+
+class TaskOld(TaskBase):
+    """Defining and manipulating matrices"""
+
+    tasklist = []
+    matrix_H = []
+    matrix_S = []
+
+    @task_to_list(tasklist)
+    def task1(self):
+        """Create a matrix H of zeros with dimensions 30 x 20"""
+        self.matrix_H = [[0] * 20 for _ in range(30)]
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task2(self):
+        """Insert values 50 to 69 into the 6th row of H."""
+        self.matrix_H[5] = list(range(50, 70))
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task3(self):
+        """Insert values 100 to 129 into the 8th column of H."""
+        for i in range(30):
+            self.matrix_H[i][7] = i + 100
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task4(self):
+        """Generate a a square matrix S, of dimension N x N,
+        with the following pattern:
+        [
+        [1 0 0 0 0 1]
+        [0 1 0 0 1 0]
+        [0 0 1 1 0 0]
+        [0 0 1 1 0 0]
+        [0 1 0 0 1 0]
+        [1 0 0 0 0 1]
+        ]
+        """
+        dimension = get_input(int, "dimension")
+        for i in range(dimension):
+            row = [0] * dimension
+            row[i] = row[-i - 1] = 1
+            self.matrix_S.append(row)
+        return {"S": self.matrix_S}
+
+
+class Task(TaskBase):
+    """Defining and manipulating matrices"""
+
+    tasklist = []
+
+    @task_to_list(tasklist)
+    def task1(self):
+        """Create a matrix H of zeros with dimensions 30 x 20"""
+        self.matrix_H = np.zeros((30, 20))
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task2(self):
+        """Insert values 50 to 69 into the 6th row of H."""
+        self.matrix_H[5] = list(range(50, 70))
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task3(self):
+        """Insert values 100 to 129 into the 8th column of H."""
+        self.matrix_H[:, 7] = range(100, 130)
+        return {"H": self.matrix_H}
+
+    @task_to_list(tasklist)
+    def task4(self):
+        """Generate a a square matrix S, of dimension N x N,
+        with the following pattern:
+        [
+        [1 0 0 0 0 1]
+        [0 1 0 0 1 0]
+        [0 0 1 1 0 0]
+        [0 0 1 1 0 0]
+        [0 1 0 0 1 0]
+        [1 0 0 0 0 1]
+        ]
+        """
+        dimension = get_input(int, "dimension")
+        self.matrix_S = np.identity(dimension)
+        np.fill_diagonal(np.fliplr(self.matrix_S), 1)
+        return {"S": self.matrix_S}
+
+
+if __name__ == "__main__":
+    task = Task("B")
+    task.run_tasks()
