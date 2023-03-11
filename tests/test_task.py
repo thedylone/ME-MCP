@@ -2,8 +2,7 @@
 
 import pytest
 
-from helpers.task import (RangeValidator, TaskBase, get_input, run_session,
-                          task_to_list)
+from helpers.task import RangeValidator, TaskBase, get_input, task_to_list
 
 
 def test_task_to_list():
@@ -112,11 +111,3 @@ class TestTaskBase:
         # test no output
         self.task_base.output = False
         assert self.task_base.log("test") is None
-
-
-def test_run_session(capsys):
-    """Test run_session method."""
-    # test fixture
-    run_session(__file__, "fixtures/test_session")
-    capture = capsys.readouterr()
-    assert capture.out == "test1\n\n\nfixtures.test_session.test2\n\n\n"
