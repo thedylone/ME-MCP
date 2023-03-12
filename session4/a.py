@@ -6,11 +6,14 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """List of tuples"""
 
-    tasklist = []
-    combined_list = []
+    tasklist: list = []
+
+    def __init__(self, name: str = "", output: bool = True) -> None:
+        super().__init__(name, output)
+        self.combined_list: list[tuple[str, str, int]] = []
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, list[tuple[str, str, int]]]:
         """Write a script to form a list of tuples,
         associating every line content of the three files into a tuple."""
         with (
@@ -31,6 +34,6 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task("A")
+    task: Task = Task("A")
     task.run_tasks()
     print(task.combined_list[20][2])

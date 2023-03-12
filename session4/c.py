@@ -1,31 +1,32 @@
 """Count occurrences"""
 
 import matplotlib.pyplot as plt
-
-import session4.b
 from helpers.task import TaskBase, task_to_list
+from session4.b import Task as TaskB
 
 
 class Task(TaskBase):
     """Count occurrences"""
 
-    tasklist = []
+    tasklist: list = []
 
-    TaskB = session4.b.Task(output=False)
-    TaskB.run_tasks()
-    combined_list = TaskB.combined_list
-    occ_list = []
+    def __init__(self, name: str = "", output: bool = True) -> None:
+        super().__init__(name, output)
+        task_b: TaskB = TaskB(output=False)
+        task_b.run_tasks()
+        self.combined_list: list[tuple[str, str, int]] = task_b.combined_list
+        self.occ_list: list[tuple[int, int, list[str]]] = []
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, list[tuple[int, int, list[str]]]]:
         """Count the occurrences of every mark and form a list of tuples with:
         a) the numerical mark,
         b) the number of occurrences of that mark,
         c) the list of students who achieved that mark."""
         self.occ_list = []
-        freq = 0
-        students = []
-        current_mark = self.combined_list[0][2]
+        freq: int = 0
+        students: list[str] = []
+        current_mark: int = self.combined_list[0][2]
         for tup in self.combined_list:
             if tup[2] == current_mark:
                 freq += 1
@@ -39,10 +40,10 @@ class Task(TaskBase):
         return {"occ_list head": self.occ_list[:5]}
 
     @task_to_list(tasklist)
-    def task2(self):
+    def task2(self) -> None:
         """Plot graphically Occurrences vs Marks."""
-        marks = [int(t[0]) for t in self.occ_list]
-        freq = [t[1] for t in self.occ_list]
+        marks: list[int] = [int(t[0]) for t in self.occ_list]
+        freq: list[int] = [t[1] for t in self.occ_list]
         plt.plot(marks, freq)
         plt.xlabel("Marks")
         plt.ylabel("Occurrences")
@@ -51,7 +52,7 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task("C")
+    task: Task = Task("C")
     task.run_tasks()
     for occ in task.occ_list:
         if occ[0] == "92":
