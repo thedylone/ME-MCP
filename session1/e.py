@@ -6,45 +6,48 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """Creating Lists"""
 
-    tasklist = []
-    A = None
-    B = None
+    tasklist: list = []
+
+    def __init__(self, name="", output=True) -> None:
+        super().__init__(name, output)
+        self.list_a: list[int] = []
+        self.list_b: list[int] = []
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, list[int]]:
         """Create manually two lists A and B,
         with integer values from 10 to 20 (included)
         and from 20 to 30 (included), respectively."""
-        self.A = list(range(10, 21))
-        self.B = list(range(20, 31))
-        return {"A": self.A, "B": self.B}
+        self.list_a: list[int] = list(range(10, 21))
+        self.list_b: list[int] = list(range(20, 31))
+        return {"A": self.list_a, "B": self.list_b}
 
     @task_to_list(tasklist)
-    def task2(self):
+    def task2(self) -> dict[str, list[int]]:
         """Sum up the third and the fourth element of A
         and assign it to the fifth element of B.
         Double the sixth element of B."""
-        self.B[4] = self.A[2] + self.A[3]
-        self.B[5] *= 2
-        return {"B": self.B}
+        self.list_b[4] = self.list_a[2] + self.list_a[3]
+        self.list_b[5] *= 2
+        return {"B": self.list_b}
 
     @task_to_list(tasklist)
-    def task3(self):
+    def task3(self) -> dict[str, list[int]]:
         """Swap the first and the last elements of A."""
-        self.A[0], self.A[-1] = self.A[-1], self.A[0]
-        return {"A": self.A}
+        self.list_a[0], self.list_a[-1] = self.list_a[-1], self.list_a[0]
+        return {"A": self.list_a}
 
     @task_to_list(tasklist)
-    def task4(self):
+    def task4(self) -> dict[str, list[int]]:
         """Set the two variables i and j to 3 and 5, respectively.
         Swap the i-index element of B with the j-index element of A."""
-        i = 3
-        j = 5
-        self.B[i], self.A[j] = self.A[j], self.B[i]
-        return {"A": self.A, "B": self.B}
+        i: int = 3
+        j: int = 5
+        self.list_b[i], self.list_a[j] = self.list_a[j], self.list_b[i]
+        return {"A": self.list_a, "B": self.list_b}
 
 
 if __name__ == "__main__":
-    task = Task("E")
+    task: Task = Task("E")
     task.run_tasks()
-    print(task.B[3])
+    print(task.list_b[3])
