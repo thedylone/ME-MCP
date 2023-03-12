@@ -6,15 +6,15 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """$docstring"""
 
-    tasklist = []
+    tasklist: list = []
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, str]:
         """task_docstring"""
         pass
         return {"var": var}
 
 
 if __name__ == "__main__":
-    task = Task("$name")
+    task: Task = Task("$name")
     task.run_tasks()

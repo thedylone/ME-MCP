@@ -4,33 +4,36 @@ import glob
 import importlib
 import sys
 from os.path import basename, dirname, isfile, join
+from types import ModuleType
 
 
 class SessionBase:
     """Base class for sessions."""
 
-    def __init__(self, name, file=__file__, subdir=""):
-        self.name = name
+    def __init__(self, name: str, file=__file__, subdir="") -> None:
+        self.name: str = name
         print(f"running {self.name}...")
         SessionBase.run_session(file=file, subdir=subdir)
 
     @staticmethod
-    def run_session(file, subdir=""):
+    def run_session(file: str, subdir: str = "") -> None:
         """Run all tasks in all files in directory of the file.
         Optional argument dir can be used to specify a child directory.
         Ignores main.py and files starting with _."""
 
-        files = sorted(glob.glob(join(dirname(file), subdir, "*.py")))
+        files: list[str] = sorted(
+            glob.glob(join(dirname(file), subdir, "*.py"))
+        )
         for _file in files:
             if not isfile(_file):
                 continue
-            fname = basename(_file)
+            fname: str = basename(_file)
             if _file.endswith("main.py") or fname.startswith("_"):
                 continue
-            subdir = subdir.replace("/", ".").replace("\\", ".")
-            modname = f"{subdir}.{fname[:-3]}" if subdir else fname[:-3]
+            sdir: str = subdir.replace("/", ".").replace("\\", ".")
+            modname: str = f"{sdir}.{fname[:-3]}" if sdir else fname[:-3]
             importlib.import_module(modname)
-            mod = sys.modules[modname]
+            mod: ModuleType = sys.modules[modname]
             try:
                 mod.Task(mod.__name__).run_tasks()
             except AttributeError as err:

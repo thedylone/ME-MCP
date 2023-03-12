@@ -16,10 +16,10 @@ class RangeValidator:
     """Class to validate a range of values."""
 
     def __init__(self, minval=None, minexc=False, maxval=None, maxexc=False):
-        self.minval = minval
-        self.minexc = minexc
-        self.maxval = maxval
-        self.maxexc = maxexc
+        self.minval: float | None = minval
+        self.minexc: bool = minexc
+        self.maxval: float | None = maxval
+        self.maxexc: bool = maxexc
 
     def __call__(self, value):
         if self.minval is not None:
@@ -38,13 +38,13 @@ class RangeValidator:
 
 
 def get_input(
-    vartype,
-    varname,
-    validator=None,
-    debug=False,
+    vartype: type,
+    varname: str,
+    validator: RangeValidator | None = None,
+    debug: bool = False,
 ):
     """Get input from user and convert to vartype.
-    Optional arguments minval and maxval can be used to specify a range."""
+    If validator is not None, validate the input with the validator."""
     while True:
         try:
             value = vartype(input(f"{varname}: "))
@@ -60,40 +60,40 @@ def get_input(
 class TaskBase:
     """Base class for tasks."""
 
-    tasklist = []
+    tasklist: list = []
 
-    def __init__(self, name="", output=True) -> None:
+    def __init__(self, name: str = "", output: bool = True) -> None:
         """Initialize a TaskBase object."""
-        self.name = name
-        self.output = output
+        self.name: str = name
+        self.output: bool = output
         self.log("################")
         self.log(f"running Task {self.name}...")
-        self.log(self.__doc__)
+        self.log(self.__doc__ or "Task")
         self.log("################")
 
-    def run_tasks(self):
+    def run_tasks(self) -> None:
         """Run all tasks in the tasklist."""
         for task in self.tasklist:
             self.log(task.__doc__)
-            res = task(self)
+            res: dict = task(self)
             if res:
                 self.log(task.__name__, **res)
             self.log("\n")
         self.log("done")
         self.log("################")
 
-    def log(self, msg, **kwargs):
+    def log(self, msg: str, **kwargs) -> str | None:
         """Print a message with variables.
         Checks if output is enabled."""
         if not self.output:
-            return
+            return None
         if not kwargs:
             print(msg)
             return msg
-        var_list = []
+        var_list: list = []
         msg += ":"
         for key, value in kwargs.items():
             var_list.append(f"{key} = {value}")
-        var_str = "; ".join(var_list)
+        var_str: str = "; ".join(var_list)
         print(msg, var_str)
         return f"{msg} {var_str}"
