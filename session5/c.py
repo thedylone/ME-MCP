@@ -1,27 +1,26 @@
 """Sorting data"""
 
 import random
-
 from helpers.task import TaskBase, task_to_list
 
 
 class Task(TaskBase):
     """Sorting data"""
 
-    tasklist = []
+    tasklist: list = []
 
     @staticmethod
-    def sort_ascending(data):
+    def sort_ascending(array: list[int | float]) -> list[int | float]:
         """Write a function that receives an array of numbers
         and returns the same array sorted in ascending order."""
         # return sorted(data)
-        sorted_list = []
-        for num in data:
+        sorted_list: list[int | float] = []
+        for num in array:
             # binary search to find the insertion point
-            left = 0
-            right = len(sorted_list) - 1
+            left: int = 0
+            right: int = len(sorted_list) - 1
             while left <= right:
-                mid = (left + right) // 2
+                mid: int = (left + right) // 2
                 if num < sorted_list[mid]:
                     right = mid - 1
                 else:
@@ -30,19 +29,19 @@ class Task(TaskBase):
         return sorted_list
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, list[int | float]]:
         """Write a function, SortAscending, that receives an array of numbers
         and returnsthe same array sorted in ascending order.
         Test the function by generating an array of 50 integer random numbers
         between 1 and 100 and sorting them."""
-        data = [random.randint(1, 100) for _ in range(50)]
-        data = self.sort_ascending(data)
-        return {"data": data}
+        array: list[int | float] = [random.randint(1, 100) for _ in range(50)]
+        array = self.sort_ascending(array)
+        return {"data": array}
 
 
 if __name__ == "__main__":
-    task = Task("C")
+    task: Task = Task("C")
     task.run_tasks()
     with open("session5/Set.txt", "r", encoding="utf-8") as f:
-        data = [int(line) for line in f]
+        data: list[int | float] = [int(line) for line in f]
     print(Task.sort_ascending(data)[124])
