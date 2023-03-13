@@ -6,10 +6,10 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """Lists and Tuples"""
 
-    tasklist = []
+    tasklist: list = []
 
     @task_to_list(tasklist)
-    def exercise5(self):
+    def exercise5(self) -> dict[str, list[float]]:
         """The budget of a company (in thousands pounds) for year 2018
         is stored in the file Budget.txt with the following numerical format
         1 this month
@@ -31,14 +31,16 @@ class Task(TaskBase):
         For every month compute the total savings
         and store them in the file Savings.txt.
         """
-        current_month = -1
-        expenses_num = -1
-        income_num = -1
-        current_expenses = 0
-        current_income = 0
-        savings = []
-        with open("consolidation-1-4/Budget.txt", "r", encoding="utf-8") as f:
-            for line in f.readlines():
+        current_month: int = -1
+        expenses_num: int = -1
+        income_num: int = -1
+        current_expenses: float = 0
+        current_income: float = 0
+        savings: list[float] = []
+        with open(
+            "consolidation-1-4/Budget.txt", "r", encoding="utf-8"
+        ) as file:
+            for line in file.readlines():
                 # print(line)
                 if current_month == -1:
                     current_month = int(line)
@@ -66,12 +68,14 @@ class Task(TaskBase):
                     current_income = 0
             savings.append(current_income - current_expenses)
 
-        with open("consolidation-1-4/Savings.txt", "w", encoding="utf-8") as f:
+        with open(
+            "consolidation-1-4/Savings.txt", "w", encoding="utf-8"
+        ) as file:
             for month in savings:
-                f.write(f"{month}\n")
+                file.write(f"{month}\n")
         return {"savings": savings}
 
 
 if __name__ == "__main__":
-    task = Task("Exercise 5")
+    task: Task = Task("Exercise 5")
     task.run_tasks()
