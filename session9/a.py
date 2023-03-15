@@ -8,48 +8,53 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """Use of numpy"""
 
-    tasklist = []
+    tasklist: list = []
+
+    def __init__(self, name: str = "", output: bool = True) -> None:
+        super().__init__(name, output)
+        self.x_vals: np.ndarray
+        self.y_vals: np.ndarray
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, np.ndarray]:
         """Create a range of values x between -2.0 and 5.8
         with step dx = 0.1."""
         self.x_vals = np.arange(-2.0, 5.8, 0.1)
         return {"x_vals head": self.x_vals[:5]}
 
     @task_to_list(tasklist)
-    def task2(self):
+    def task2(self) -> dict[str, np.ndarray]:
         """Calculate the values y = sin x for the above range of x."""
         self.y_vals = np.sin(self.x_vals)
         return {"y_vals head": self.y_vals[:5]}
 
     @task_to_list(tasklist)
-    def task3(self):
+    def task3(self) -> None:
         """Plot y vs x."""
         plt.plot(self.x_vals, self.y_vals)
         plt.show()
 
     @task_to_list(tasklist)
-    def task4(self):
+    def task4(self) -> dict[str, np.ndarray]:
         """Create a range of 100 values x between -2.0 and 5.8."""
         self.x_vals = np.linspace(-2.0, 5.8, 100)
         return {"x_vals head": self.x_vals[:5]}
 
     @task_to_list(tasklist)
-    def task5(self):
+    def task5(self) -> dict[str, np.ndarray]:
         """Calculate the values y = (e^x - e^(-x))/2
         for the above range of x."""
         self.y_vals = (np.exp(self.x_vals) - np.exp(-self.x_vals)) / 2
         return {"y_vals head": self.y_vals[:5]}
 
     @task_to_list(tasklist)
-    def task6(self):
+    def task6(self) -> None:
         """Plot y vs x."""
         plt.plot(self.x_vals, self.y_vals)
         plt.show()
 
     @task_to_list(tasklist)
-    def task7(self):
+    def task7(self) -> dict[str, np.ndarray]:
         """Generate an array x of numbers in the range [-5 : 5]
         with the following steps:
             dx = 0.5 in -5 <= x <= -2,
@@ -65,19 +70,19 @@ class Task(TaskBase):
         return {"x_vals head": self.x_vals[:5]}
 
     @task_to_list(tasklist)
-    def task8(self):
+    def task8(self) -> dict[str, np.ndarray]:
         """Compute the function: y = e^(-x^2 / 4) in the above range."""
         self.y_vals = np.exp(-self.x_vals**2 / 4)
         return {"y_vals head": self.y_vals[:5]}
 
     @task_to_list(tasklist)
-    def task9(self):
+    def task9(self) -> None:
         """Plot y vs x."""
         plt.plot(self.x_vals, self.y_vals)
         plt.show()
 
 
 if __name__ == "__main__":
-    task = Task("A")
+    task: Task = Task("A")
     task.run_tasks()
     print(task.x_vals[14])
