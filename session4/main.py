@@ -1,6 +1,6 @@
 """Session 4: Tuples and Sorting Algorithm"""
 
-from helpers.task import run_session
+from helpers.session import SessionBase
 
 if __name__ == "__main__":
-    run_session(__file__)
+    SessionBase(__doc__, __file__)

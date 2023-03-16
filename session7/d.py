@@ -9,26 +9,26 @@ from session7.c import Task as TaskC
 class Task(TaskBase):
     """Create objects"""
 
-    tasklist = []
-    taskB = TaskB(output=False)
-    taskB.run_tasks()
-    taskC = TaskC(output=False)
-    taskC.run_tasks()
+    tasklist: list = []
+    task_b: TaskB = TaskB(output=False)
+    task_b.run_tasks()
+    task_c: TaskC = TaskC(output=False)
+    task_c.run_tasks()
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.poly1 = None
-        self.poly2 = None
-        self.poly3 = None
-        self.poly4 = None
+    def __init__(self, name: str = "", output: bool = True) -> None:
+        super().__init__(name, output)
+        self.poly1: Euclidean
+        self.poly2: Euclidean
+        self.poly3: Euclidean
+        self.poly4: Euclidean
 
     @staticmethod
-    def create(name, nside, pts):
+    def create(name, nside, pts) -> Euclidean:
         """Create Euclidean objects"""
         return Euclidean(name, Polygon(nside, [Point(x, y) for x, y in pts]))
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, Euclidean]:
         """Create, and initialise, instances of the above classes,
         to represent the shapes as in the figure below"""
         self.poly1 = self.create("Pol1", 4, [(2, 8), (2, 10), (8, 10), (8, 8)])
@@ -46,5 +46,5 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task("D")
+    task: Task = Task("D")
     task.run_tasks()

@@ -3,32 +3,32 @@
 import argparse
 import os
 import sys
-
-from helpers import task
 from string import Template
+from collections.abc import Callable
+from helpers.session import SessionBase
 
 
-def validate_session_decorator(func):
+def validate_session_decorator(func: Callable) -> Callable:
     """Decorator to validate a session name."""
 
-    def wrapper(self, session, file=__file__):
+    def wrapper(self, session: str, file: str = __file__):
         self.validate_session(session, file)
         return func(self, session, file)
 
     return wrapper
 
 
-def validate_input_decorator(func):
+def validate_input_decorator(func: Callable) -> Callable:
     """Decorator to validate an input string."""
 
-    def wrapper(self, _input, file=__file__):
+    def wrapper(self, _input: str, file: str = __file__):
         self.validate_input(_input, file)
         return func(self, _input, file)
 
     return wrapper
 
 
-def flatten(list_of_lists):
+def flatten(list_of_lists: list[list]) -> list:
     """Flatten a list of lists."""
     return [item for sublist in list_of_lists for item in sublist]
 
@@ -36,17 +36,17 @@ def flatten(list_of_lists):
 class SessionRunner:
     """Class to run a session."""
 
-    inputs = []
-    session_prefix = ("session", "consolidation")
+    inputs: list[str] = []
+    session_prefix: tuple[str, str] = ("session", "consolidation")
 
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     @staticmethod
-    def get_sessions(file=__file__):
+    def get_sessions(file: str = __file__) -> list[str]:
         """Get all sessions in a directory."""
-        sessions = []
-        directory = os.path.dirname(file)
+        sessions: list[str] = []
+        directory: str = os.path.dirname(file)
         for _file in os.listdir(directory):
             if not os.path.isdir(os.path.join(directory, _file)):
                 continue
@@ -55,28 +55,28 @@ class SessionRunner:
         return sorted(sessions)
 
     @classmethod
-    def validate_session(cls, session, file=__file__):
+    def validate_session(cls, session: str, file: str = __file__) -> bool:
         """Validate a session name."""
         if session not in cls.get_sessions(file):
             raise ValueError(f"Session {session} not found.")
         return True
 
     @classmethod
-    def validate_input(cls, inputs, file=__file__):
+    def validate_input(cls, inputs: list[str], file: str = __file__) -> bool:
         """Validate a list of inputs."""
         if "all" in inputs:
             cls.inputs = ["all"]
             return True
-        sessions = cls.get_sessions(file)
-        valid_inputs = []
+        sessions: list[str] = cls.get_sessions(file)
+        valid_inputs: list[str] = []
         for i in inputs:
             if i == "":
                 continue
             if i.isdigit():
-                i = int(i)
-                if i < 1 or i > len(sessions):
-                    raise ValueError(f"Invalid input {i}.")
-                valid_inputs.append(sessions[i - 1])
+                _i: int = int(i)
+                if _i < 1 or _i > len(sessions):
+                    raise ValueError(f"Invalid input {_i}.")
+                valid_inputs.append(sessions[_i - 1])
             else:
                 if i not in sessions:
                     raise ValueError(f"Invalid input {i}.")
@@ -87,22 +87,22 @@ class SessionRunner:
         return True
 
     @validate_session_decorator
-    def run_session(self, session, file=__file__):
+    def run_session(self, session: str, file: str = __file__) -> None:
         """Run a session."""
         if file == __file__:
             print(f"running {session}...")
             print("~~~~~~~~~~~~~~~~~~~~")
-        task.run_session(file, session)
+        SessionBase.run_session(file, session)
         if file == __file__:
             print("~~~~~~~~~~~~~~~~~~~~\n")
 
-    def run_all_sessions(self, file=__file__):
+    def run_all_sessions(self, file: str = __file__) -> None:
         """Run all sessions."""
         for session in self.get_sessions(file):
             self.run_session(session, file)
 
     @validate_input_decorator
-    def run_session_input(self, inputs, file=__file__):
+    def run_session_input(self, _inputs, file: str = __file__) -> None:
         """Run a session based on user input."""
         if self.inputs == ["all"]:
             self.run_all_sessions(file)
@@ -110,7 +110,7 @@ class SessionRunner:
             for session in self.inputs:
                 self.run_session(session, file)
 
-    def user_select(self, file=__file__, debug=False):
+    def user_select(self, file: str = __file__, debug: bool = False) -> None:
         """Prompt user to select a session."""
         if not debug:
             print("Select a session to run:")
@@ -119,18 +119,19 @@ class SessionRunner:
             print("all. Run all sessions")
         while True:
             try:
-                inputs = input("Enter session(s) to run: ").split(" ")
+                inputs_str: str = input("Enter session(s) to run: ")
+                inputs: list[str] = inputs_str.split(",")
                 self.run_session_input(inputs, file)
                 break
-            except ValueError as err:
+            except ValueError as error:
                 if debug:
-                    raise ValueError from err
+                    raise ValueError from error
                 print("Invalid input. Please try again.")
                 continue
 
-    def create_session(self):
+    def create_session(self) -> None:
         """Create a session."""
-        session_name = input("Enter session name: ")
+        session_name: str = input("Enter session name: ")
         # create directory
         self.create_dir_and_main(session_name)
         # create tasks
@@ -139,7 +140,7 @@ class SessionRunner:
             if input("Create another task? (y/n): ").lower() != "y":
                 break
 
-    def create_dir_and_main(self, session_name):
+    def create_dir_and_main(self, session_name: str) -> None:
         """Create a session directory and main.py."""
         if not session_name.startswith(SessionRunner.session_prefix):
             print(f"Name must start with {SessionRunner.session_prefix}")
@@ -147,31 +148,36 @@ class SessionRunner:
         # create directory
         try:
             os.makedirs(session_name)
-        except FileExistsError:
+        except FileExistsError as exc:
             print("Session name already exists, exiting...")
-            raise ValueError(f"Invalid session name {session_name}.")
+            raise ValueError(f"Invalid session name {session_name}.") from exc
         # create main.py
-        with open("helpers/templates/main.txt", "r", encoding="utf-8") as f:
-            main_template = Template(f.read())
-        with open(f"{session_name}/main.py", "w", encoding="utf-8") as f:
-            session_doc = input("Enter session description: ")
-            f.write(main_template.substitute(docstring=session_doc))
+        with open("helpers/templates/main.txt", "r", encoding="utf-8") as file:
+            main_template: Template = Template(file.read())
+        with open(f"{session_name}/main.py", "w", encoding="utf-8") as file:
+            session_doc: str = input("Enter session description: ")
+            file.write(main_template.substitute(docstring=session_doc))
 
     @validate_session_decorator
-    def create_task(self, session, file=__file__):
+    def create_task(self, session: str, _file=__file__) -> None:
         """Create a task."""
-        task_name = input("Enter task name: ")
-        with open("helpers/templates/task.txt", "r") as f:
-            task_template = Template(f.read())
-        with open(f"{session}/{task_name}.py", "w", encoding="utf-8") as f:
-            task_doc = input("Enter task description: ")
-            task_d = {"docstring": task_doc, "name": task_name.title()}
-            f.write(task_template.substitute(task_d))
+        task_name: str = input("Enter task name: ")
+        with open("helpers/templates/task.txt", "r", encoding="utf-8") as file:
+            task_template: Template = Template(file.read())
+        with open(f"{session}/{task_name}.py", "w", encoding="utf-8") as file:
+            task_doc: str = input("Enter task description: ")
+            task_d: dict[str, str] = {
+                "docstring": task_doc,
+                "name": task_name.title(),
+            }
+            file.write(task_template.substitute(task_d))
 
 
 if __name__ == "__main__":
     try:
-        parser = argparse.ArgumentParser(description="run me1 sessions tasks")
+        parser: argparse.ArgumentParser = argparse.ArgumentParser(
+            description="run me1 sessions tasks"
+        )
         parser.add_argument(
             "-a",
             "--all",
@@ -196,7 +202,7 @@ if __name__ == "__main__":
             "--task",
             help="create task in existing session",
         )
-        args = parser.parse_args()
+        args: argparse.Namespace = parser.parse_args()
         if args.all:
             SessionRunner().run_all_sessions()
         elif args.create:

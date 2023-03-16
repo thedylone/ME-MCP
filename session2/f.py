@@ -2,46 +2,44 @@
 
 import math
 import time
-
 import numpy
-
 from helpers.task import TaskBase, get_input, task_to_list
 
 
 class Task(TaskBase):
     """Prime numbers"""
 
-    tasklist = []
+    tasklist: list = []
 
-    def __init__(self, name="", output=True) -> None:
+    def __init__(self, name: str = "", output: bool = True) -> None:
         super().__init__(name, output)
-        self.limit = get_input(int, "N")
+        self.limit: int = get_input(int, "N")
 
     @task_to_list(tasklist)
     def recursive(self):
         """Generate a list with all the prime numbers up to N. [recursive]"""
 
-        def get_primes(limit):
+        def get_primes(limit: int) -> list:
             if limit < 2:
                 return []
-            primes = get_primes(limit - 1)
+            primes: list = get_primes(limit - 1)
             if not any(limit % p == 0 for p in primes):
                 primes.append(limit)
             return primes
 
-        start = time.time()
+        start: float = time.time()
         try:
-            primes = get_primes(self.limit)
+            primes: list = get_primes(self.limit)
         except RecursionError as err:
             return {"error": err}
-        end = time.time()
+        end: float = time.time()
         return {"primes": primes, "time": end - start}
 
     @task_to_list(tasklist)
     def iterative(self):
         """Generate a list with all the prime numbers up to N. [iterative]"""
 
-        def is_prime(num):
+        def is_prime(num: int) -> bool:
             if num < 2:
                 return False
             if num % 2 == 0:
@@ -51,9 +49,9 @@ class Task(TaskBase):
                     return False
             return True
 
-        start = time.time()
-        primes = [i for i in range(self.limit) if is_prime(i)]
-        end = time.time()
+        start: float = time.time()
+        primes: list[int] = [i for i in range(self.limit) if is_prime(i)]
+        end: float = time.time()
         return {"primes": primes, "time": end - start}
 
     @task_to_list(tasklist)
@@ -61,16 +59,16 @@ class Task(TaskBase):
         """Generate a list with all the prime numbers up to N. [sieve]"""
         if self.limit < 2:
             return {"primes": []}
-        start = time.time()
-        primes = [True] * (self.limit + 1)
-        primes[0] = primes[1] = False
+        start: float = time.time()
+        is_prime: list[bool] = [True] * (self.limit + 1)
+        is_prime[0] = is_prime[1] = False
         for i in range(2, int(math.sqrt(self.limit)) + 1):
-            if primes[i]:
+            if is_prime[i]:
                 for j in range(i * i, self.limit + 1, i):
-                    primes[j] = False
+                    is_prime[j] = False
 
-        primes = [i for i, v in enumerate(primes) if v]
-        end = time.time()
+        primes: list[int] = [i for i, v in enumerate(is_prime) if v]
+        end: float = time.time()
         return {"primes": primes, "time": end - start}
 
     @task_to_list(tasklist)
@@ -78,19 +76,21 @@ class Task(TaskBase):
         """Generate a list with all the prime numbers up to N. [from 2]"""
         if self.limit < 2:
             return {"primes": []}
-        start = time.time()
-        sieve = numpy.ones(self.limit // 3 + (self.limit % 6 == 2), dtype=bool)
+        start: float = time.time()
+        sieve: numpy.ndarray = numpy.ones(
+            self.limit // 3 + (self.limit % 6 == 2), dtype=bool
+        )
         for i in range(1, int(math.sqrt(self.limit)) // 3 + 1):
             if sieve[i]:
-                k = 3 * i + 1 | 1
+                k: int = 3 * i + 1 | 1
                 sieve[k * k // 3 :: 2 * k] = False
                 sieve[k * (k - 2 * (i & 1) + 4) // 3 :: 2 * k] = False
         primes = numpy.r_[2, 3, ((3 * numpy.nonzero(sieve)[0][1:] + 1) | 1)]
-        end = time.time()
+        end: float = time.time()
         return {"primes": primes, "time": end - start}
 
 
 if __name__ == "__main__":
-    task = Task("F")
+    task: Task = Task("F")
     task.run_tasks()
     print(len(task.from2()["primes"]))

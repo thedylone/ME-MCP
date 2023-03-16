@@ -1,6 +1,6 @@
 """Session 1: Variables and Statements"""
 
-from helpers.task import run_session
+from helpers.session import SessionBase
 
 if __name__ == "__main__":
-    run_session(__file__)
+    SessionBase(__doc__, __file__)

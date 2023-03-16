@@ -1,22 +1,23 @@
 """Finding Pi"""
 
 import random
-
 import matplotlib.pyplot as plt
-
 from helpers.task import RangeValidator, TaskBase, get_input, task_to_list
 
 
 class Task(TaskBase):
     """Finding Pi"""
 
-    tasklist = []
-    inside = 0
-    inside_pts = []
-    outside_pts = []
+    tasklist: list = []
+
+    def __init__(self, name: str = "", output: bool = True) -> None:
+        super().__init__(name, output)
+        self.inside: int = 0
+        self.inside_pts: list[tuple[float, float]] = []
+        self.outside_pts: list[tuple[float, float]] = []
 
     @task_to_list(tasklist)
-    def task1(self, pts=False):
+    def task1(self, pts=False) -> dict[str, float | int]:
         """The value of p can be determined numerically by using
         a technique based on random numbers. The area of the square
         can be represented with a set of N random spatial points
@@ -24,10 +25,10 @@ class Task(TaskBase):
         Some of these points, Nc, will reside into the circle too,
         and would therefore represent the area of the circle.
         Write a script to estimate the value of p with a number N of points."""
-        limit = get_input(int, "N", RangeValidator(1))
+        limit: int = get_input(int, "N", RangeValidator(1))
         for _ in range(limit):
-            x_coord = random.random()
-            y_coord = random.random()
+            x_coord: float = random.random()
+            y_coord: float = random.random()
             if x_coord * x_coord + y_coord * y_coord <= 1:
                 self.inside += 1
                 if pts:
@@ -35,13 +36,13 @@ class Task(TaskBase):
             elif pts:
                 self.outside_pts.append((x_coord, y_coord))
         if limit:
-            calc_pi = 4 * self.inside / limit
+            calc_pi: float = 4 * self.inside / limit
         else:
             calc_pi = 0
         return {"pi": calc_pi}
 
     @task_to_list(tasklist)
-    def task2(self):
+    def task2(self) -> None:
         """Amend the above script to plot all the random points generated.
         Plot in red the points laying within the circle
         and in blue the ones laying outside the circle.
@@ -49,7 +50,7 @@ class Task(TaskBase):
         The plot will make more explicit the concept beyond the method."""
         self.task1(pts=True)
 
-        scale = min(max(5000 / self.inside, 1), 50)
+        scale: float = min(max(5000 / self.inside, 1), 50)
 
         plt.scatter(*zip(*self.inside_pts), color="red", s=scale)
         plt.scatter(*zip(*self.outside_pts), color="blue", s=scale)
@@ -60,7 +61,7 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task("E")
+    task: Task = Task("E")
     task.run_tasks()
-    rand = [random.random() * 6 - 3 for _ in range(50)]
+    rand: list[float] = [random.random() * 6 - 3 for _ in range(50)]
     print(min(rand), max(rand))

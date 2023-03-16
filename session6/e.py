@@ -7,10 +7,10 @@ from helpers.task import TaskBase, task_to_list
 class Task(TaskBase):
     """Experimental analysis"""
 
-    tasklist = []
+    tasklist: list = []
 
     @task_to_list(tasklist)
-    def task1(self):
+    def task1(self) -> dict[str, list[float] | float]:
         """The performance of a boiling system has been monitored with daily
         measurements of its water temperature. Measurements were performed
         throughout ten different days. Each day, measurements were taken at
@@ -19,12 +19,12 @@ class Task(TaskBase):
         Compute the average temperature, Tav, of the water for each day,
         and plot the result in a graph with Tav vs day.
         Compute also the maximum and minimum temperatures overall."""
-        averages = []
-        maximum = float("-inf")
-        minimum = float("inf")
+        averages: list[float] = []
+        maximum: float = float("-inf")
+        minimum: float = float("inf")
         with open("session6/Temperatures.txt", "r", encoding="utf-8") as file:
-            i = 0
-            running = 0
+            i: int = 0
+            running: float = 0
             for line in file:
                 i += 1
                 running += float(line)
@@ -40,5 +40,5 @@ class Task(TaskBase):
 
 
 if __name__ == "__main__":
-    task = Task("E")
+    task: Task = Task("E")
     task.run_tasks()
