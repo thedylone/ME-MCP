@@ -3,7 +3,7 @@
 from helpers.session import SessionBase
 
 
-def test_run_session(capsys):
+def test_run_session(capsys) -> None:
     """Test run_session method."""
     # test fixture
     SessionBase.run_session(__file__, "fixtures/test_session")

@@ -4,23 +4,24 @@ import argparse
 import os
 import sys
 from string import Template
+from collections.abc import Callable
 from helpers.session import SessionBase
 
 
-def validate_session_decorator(func):
+def validate_session_decorator(func: Callable) -> Callable:
     """Decorator to validate a session name."""
 
-    def wrapper(self, session, file=__file__):
+    def wrapper(self, session: str, file: str = __file__):
         self.validate_session(session, file)
         return func(self, session, file)
 
     return wrapper
 
 
-def validate_input_decorator(func):
+def validate_input_decorator(func: Callable) -> Callable:
     """Decorator to validate an input string."""
 
-    def wrapper(self, _input, file=__file__):
+    def wrapper(self, _input: str, file: str = __file__):
         self.validate_input(_input, file)
         return func(self, _input, file)
 

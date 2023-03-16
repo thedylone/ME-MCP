@@ -1,22 +1,22 @@
 """test the task module."""
 
+from collections.abc import Callable
 import pytest
-
 from helpers.task import RangeValidator, TaskBase, get_input, task_to_list
 
 
-def test_task_to_list():
+def test_task_to_list() -> None:
     """Test task_to_list method."""
     # test task_to_list
-    test_list = []
+    test_list: list[Callable] = []
 
     # test if keeps order
     @task_to_list(test_list)
-    def test_task():
+    def test_task() -> dict[str, int]:
         return {"test": 1}
 
     @task_to_list(test_list)
-    def test_task2():
+    def test_task2() -> dict[str, int]:
         return {"test": 2}
 
     test_task()
@@ -25,10 +25,10 @@ def test_task_to_list():
     assert test_list[1].__name__ == test_task2.__name__
 
 
-def test_range_validator():
+def test_range_validator() -> None:
     """Test RangeValidator class."""
     # test RangeValidator
-    validator = RangeValidator(minval=1, maxval=10)
+    validator: RangeValidator = RangeValidator(minval=1, maxval=10)
     assert validator(1) == 1
     assert validator(10) == 10
     with pytest.raises(ValueError):
@@ -44,7 +44,7 @@ def test_range_validator():
         validator(10)
 
 
-def test_get_input(monkeypatch):
+def test_get_input(monkeypatch) -> None:
     """Test get_input method."""
     # test successful input - int
     monkeypatch.setattr("builtins.input", lambda x: "1")
@@ -88,9 +88,9 @@ def test_get_input(monkeypatch):
 class TestTaskBase:
     """Test the TaskBase class."""
 
-    task_base = TaskBase("test", False)
+    task_base: TaskBase = TaskBase("test", False)
 
-    def test_init(self):
+    def test_init(self) -> None:
         """Test TaskBase initialization method."""
         # test init
         assert self.task_base.name == "test"
@@ -98,7 +98,7 @@ class TestTaskBase:
         self.task_base.output = True
         assert self.task_base.output is True
 
-    def test_log(self):
+    def test_log(self) -> None:
         """Test log method."""
         self.task_base.output = True
         # test log msg
@@ -106,7 +106,7 @@ class TestTaskBase:
         # test log msg and kwargs
         assert self.task_base.log("test", test=1) == "test: test = 1"
         # test log msg and kwargs with multiple values
-        val = {"test": 1, "test2": 2}
+        val: dict[str, int] = {"test": 1, "test2": 2}
         assert self.task_base.log("test", **val) == "test: test = 1; test2 = 2"
         # test no output
         self.task_base.output = False
