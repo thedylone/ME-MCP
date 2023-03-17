@@ -46,6 +46,9 @@ class Task(TaskBase):
         )
         vector_b: np.ndarray = np.array([9, -7, -1, 5], dtype=float)
         vector_x: np.ndarray = self.gauss_elim(matrix_a, vector_b)
+        assert np.allclose(
+            np.dot(matrix_a, vector_x), vector_b
+        ), "Gauss elimination failed"
         return {"vector_x": vector_x}
 
 
