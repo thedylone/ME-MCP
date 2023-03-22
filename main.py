@@ -37,7 +37,11 @@ class SessionRunner:
     """Class to run a session."""
 
     inputs: list[str] = []
-    session_prefix: tuple[str, str] = ("session", "consolidation")
+    session_prefix: tuple[str, str, str] = (
+        "session",
+        "consolidation",
+        "finals",
+    )
 
     def __init__(self) -> None:
         pass
