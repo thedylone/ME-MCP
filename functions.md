@@ -115,8 +115,6 @@ list_a = [(i, j) for i in range(10) if i % 2 == 0 for j in range(20) if j % 3 ==
 ```
 > However it can get quite confusing to read, so it is best to use it sparingly and only when it makes the code more concise.
 
-```
-
 Generate a list of numbers from 0 to n-1
 ```python
 list(range(n))
