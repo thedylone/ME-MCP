@@ -25,7 +25,7 @@ class TaskOld(TaskBase):
     @staticmethod
     def transpose(matrix: list[list[float | int]]) -> list[list[float | int]]:
         """Transpose a matrix."""
-        return [[row[i] for row in matrix] for i in range(len(matrix[0]))]
+        return list(map(list, zip(*matrix)))
 
     @task_to_list(tasklist)
     def task2(self) -> dict[str, list[list[float | int]]]:

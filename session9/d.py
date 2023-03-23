@@ -63,10 +63,7 @@ class TaskOld(TaskBase):
         scalar: float | int, matrix: list[list[float | int]]
     ) -> list[list[float]]:
         """Multiply a matrix by a scalar."""
-        return [
-            [scalar * matrix[i][j] for j in range(len(matrix[0]))]
-            for i in range(len(matrix))
-        ]
+        return [[scalar * val for val in row] for row in matrix]
 
     @task_to_list(tasklist)
     def task3(self) -> dict[str, bool]:
