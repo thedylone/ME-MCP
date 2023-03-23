@@ -8,6 +8,17 @@ run [`main.py`](main.py) in the root directory and select which session to run. 
 to run `main.py` in each session, the root directory should be installed as a package for `main.py` in the session to access the `helpers` directory.
 
 ---
+## environment variable
+
+create a ```.env``` file in the root directory, and add the following:
+
+```env
+CID=[your CID]
+```
+
+else if CID is not found in the environment variables, it will just use the default CID ```02345678```.
+
+---
 
 ## creating a new session
 
