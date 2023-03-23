@@ -16,17 +16,19 @@ class TaskOld(TaskBase):
 
     @staticmethod
     def matmat(
-        matrix_1: list[list[float | int]], matrix_2: list[list[float | int]]
+        matrix_a: list[list[float | int]], matrix_b: list[list[float | int]]
     ) -> list[list[float | int]]:
         """Multiply two matrices. Return 0 if the sizes are incompatible."""
-        if len(matrix_1[0]) != len(matrix_2):
+        if len(matrix_a[0]) != len(matrix_b):
             return [[0]]
+        zip_b: list[list[float | int]] = list(map(list, zip(*matrix_b)))
+
         return [
             [
-                sum(a * b for a, b in zip(row_A, col_B))
-                for col_B in zip(*matrix_2)
+                sum(val_a * val_b for val_a, val_b in zip(row_a, col_b))
+                for col_b in zip_b
             ]
-            for row_A in matrix_1
+            for row_a in matrix_a
         ]
 
     @task_to_list(tasklist)
