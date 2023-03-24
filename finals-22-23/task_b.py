@@ -103,7 +103,7 @@ def main() -> None:
     5. Subdivide C in four sub-quadrants. Compose a new matrix D, of same size
     as C, where each sub-quadrant is obtained by transposing the homologous
     sub-quadrant of C"""
-    mat_a: np.ndarray = import_matrix()
+    mat_a: np.ndarray = import_matrix("finals-22-23/Matrix.txt")
     print(mat_a)
     mat_c: np.ndarray = create_matrix_c(mat_a)
     print(mat_c)
