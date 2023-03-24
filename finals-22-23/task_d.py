@@ -20,9 +20,10 @@ def sequence(num) -> float:
 
 def main() -> None:
     """Print the first 20 values of the sequence."""
-    for i in range(1, 21):
-        print(sequence(i))
+    # starting from n = 1 to n = 20
+    print(*[sequence(n) for n in range(1, 21)])
 
 
 if __name__ == "__main__":
     main()
+    assert sequence(20) == 4515086720

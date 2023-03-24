@@ -22,16 +22,28 @@ def series(limit: int) -> float:
             for j in range(0, limit + 2)
         )
     )
+    # # equivalent to:
+    # outer = 0
+    # for j in range(0, limit + 2):
+    # # note j starts from 0 (negative factorials)
+    #     inner = 0
+    #     for k in range(2, 10 * j + 1, 2):
+    #     # sum up inner terms, use step 2 to only sum even numbers
+    #         inner += (-1) ** j * j**k / math.factorial(k)
+    #     outer += 1 / math.factorial(j) * inner
+    # return outer
 
 
 def main() -> None:
     """Compute the sum S eight times, taking N as each digit of your CID.
     Plot the various values of S against the number of terms N."""
     s_vals: list[float] = []
-    cid = list(map(int, list(CID)))
+    cid = list(map(int, list(CID)))  # convert CID to list of ints
     for digit in cid:
-        s_vals.append(series(digit))
+        s_vals.append(series(digit))  # compute S for each digit
 
+    # plot S vs N
+    # use a bar chart since CID values are discrete
     plt.bar(cid, s_vals)
     plt.xlabel("N")
     plt.ylabel("S")
