@@ -26,7 +26,7 @@ class Task(TaskBase):
                     (-1) ** j * j**k / math.factorial(k)
                     for k in range(2, 10 * j + 1, 2)
                 )
-                for j in range(0, limit + 2)
+                for j in range(0, limit + 3)
             )
         )
 
@@ -56,7 +56,7 @@ def series(limit: int) -> float:
                 (-1) ** j * j**k / math.factorial(k)
                 for k in range(2, 10 * j + 1, 2)
             )
-            for j in range(0, limit + 2)
+            for j in range(0, limit + 3)
         )
     )
     # # equivalent to:
