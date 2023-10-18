@@ -1,9 +1,8 @@
 """contains the helper class and functions for the sessions"""
 
-import glob
 import importlib
 import sys
-from os.path import basename, dirname, isfile, join
+from pathlib import Path
 from types import ModuleType
 
 
@@ -13,25 +12,25 @@ class SessionBase:
     def __init__(self, name: str, file=__file__, subdir="") -> None:
         self.name: str = name
         print(f"running {self.name}...")
-        SessionBase.run_session(file=file, subdir=subdir)
+        SessionBase.run_session(Path(file).parent, subdir=subdir)
 
     @staticmethod
-    def run_session(file: str, subdir: str = "") -> None:
+    def run_session(directory: Path, subdir: str = "") -> None:
         """Run all tasks in all files in directory of the file.
         Optional argument dir can be used to specify a child directory.
         Ignores main.py and files starting with _."""
 
-        files: list[str] = sorted(
-            glob.glob(join(dirname(file), subdir, "*.py"))
-        )
-        for _file in files:
-            if not isfile(_file):
+        if subdir:
+            directory = directory / subdir
+        files: list[Path] = sorted(directory.glob("*.py"))
+        for file in files:
+            if not file.is_file():
                 continue
-            fname: str = basename(_file)
-            if _file.endswith("main.py") or fname.startswith("_"):
+            fname: str = file.stem
+            if fname.startswith("_") or fname == "main":
                 continue
             sdir: str = subdir.replace("/", ".").replace("\\", ".")
-            modname: str = f"{sdir}.{fname[:-3]}" if sdir else fname[:-3]
+            modname: str = f"{sdir}.{fname}" if sdir else fname
             importlib.import_module(modname)
             mod: ModuleType = sys.modules[modname]
             try:
