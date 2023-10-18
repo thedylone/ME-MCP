@@ -1,7 +1,7 @@
 """finds all sessions in the current directory and runs them via input"""
 
 import argparse
-import os
+from pathlib import Path
 import sys
 from string import Template
 from collections.abc import Callable
@@ -11,19 +11,22 @@ from helpers.session import SessionBase
 def validate_session_decorator(func: Callable) -> Callable:
     """Decorator to validate a session name."""
 
-    def wrapper(self, session: str, file: str = __file__):
-        self.validate_session(session, file)
-        return func(self, session, file)
+    def wrapper(self: "SessionRunner", session: Path):
+        self.validate_session(session)
+        return func(self, session)
 
     return wrapper
 
 
-def validate_input_decorator(func: Callable) -> Callable:
+def validate_session_input_decorator(func: Callable) -> Callable:
     """Decorator to validate an input string."""
 
-    def wrapper(self, _input: str, file: str = __file__):
-        self.validate_input(_input, file)
-        return func(self, _input, file)
+    def wrapper(
+        self: "SessionRunner",
+        _input: list[str],
+    ):
+        self.validate_session_input(_input)
+        return func(self, _input)
 
     return wrapper
 
@@ -36,96 +39,137 @@ def flatten(list_of_lists: list[list]) -> list:
 class SessionRunner:
     """Class to run a session."""
 
-    inputs: list[str] = []
     session_prefix: tuple[str, str, str] = (
         "session",
         "consolidation",
         "finals",
     )
 
-    def __init__(self) -> None:
-        pass
+    def __init__(self, directory: Path = Path(__file__).parent) -> None:
+        self.directory: Path = directory
+        self.years: list[Path] = self.get_years(directory)
+        self.year: Path
+        self.sessions: list[Path] = []
+        self.inputs: list[Path] | list[str] = []
 
     @staticmethod
-    def get_sessions(file: str = __file__) -> list[str]:
+    def get_sessions(directory: Path) -> list[Path]:
         """Get all sessions in a directory."""
-        sessions: list[str] = []
-        directory: str = os.path.dirname(file)
-        for _file in os.listdir(directory):
-            if not os.path.isdir(os.path.join(directory, _file)):
+        sessions: list[Path] = []
+        for file in directory.iterdir():
+            if not file.is_dir():
                 continue
-            if _file.startswith(SessionRunner.session_prefix):
-                sessions.append(_file)
+            if file.name.startswith(SessionRunner.session_prefix):
+                sessions.append(file)
         return sorted(sessions)
 
-    @classmethod
-    def validate_session(cls, session: str, file: str = __file__) -> bool:
+    @staticmethod
+    def get_years(directory: Path) -> list[Path]:
+        """Get all years in a directory."""
+        years: list[Path] = []
+        for file in directory.iterdir():
+            if not file.is_dir():
+                continue
+            if file.name.startswith("year"):
+                years.append(file)
+        return sorted(years)
+
+    def validate_year_input(self, input_str: str) -> bool:
+        """Validate a year input."""
+        if input_str.isdigit():
+            _input: int = int(input_str)
+            if _input < 1 or _input > len(self.years):
+                raise ValueError(f"Invalid input {_input}.")
+            self.year = self.years[_input - 1]
+        else:
+            if Path(input_str) not in self.years:
+                raise ValueError(f"Invalid input {input_str}.")
+            self.year = Path(input_str)
+        return True
+
+    def validate_session(self, session: Path) -> bool:
         """Validate a session name."""
-        if session not in cls.get_sessions(file):
+        if session not in self.sessions:
             raise ValueError(f"Session {session} not found.")
         return True
 
-    @classmethod
-    def validate_input(cls, inputs: list[str], file: str = __file__) -> bool:
+    def validate_session_input(self, inputs: list[str]) -> bool:
         """Validate a list of inputs."""
         if "all" in inputs:
-            cls.inputs = ["all"]
+            self.inputs = ["all"]
             return True
-        sessions: list[str] = cls.get_sessions(file)
-        valid_inputs: list[str] = []
+        valid_inputs: list[Path] = []
         for i in inputs:
+            i: str = i.strip()
             if i == "":
                 continue
             if i.isdigit():
                 _i: int = int(i)
-                if _i < 1 or _i > len(sessions):
+                if _i < 1 or _i > len(self.sessions):
                     raise ValueError(f"Invalid input {_i}.")
-                valid_inputs.append(sessions[_i - 1])
+                valid_inputs.append(self.sessions[_i - 1])
             else:
-                if i not in sessions:
+                if self.year / i not in self.sessions:
                     raise ValueError(f"Invalid input {i}.")
-                valid_inputs.append(i)
+                valid_inputs.append(self.year / i)
         if not valid_inputs:
             raise ValueError("No valid inputs.")
-        cls.inputs = valid_inputs
+        self.inputs = valid_inputs
         return True
 
     @validate_session_decorator
-    def run_session(self, session: str, file: str = __file__) -> None:
+    def run_session(self, session: Path) -> None:
         """Run a session."""
-        if file == __file__:
+        if __name__ == "__main__":
             print(f"running {session}...")
             print("~~~~~~~~~~~~~~~~~~~~")
-        SessionBase.run_session(file, session)
-        if file == __file__:
+        SessionBase.run_session(
+            self.directory, str(session.relative_to(self.directory))
+        )
+        if __name__ == "__main__":
             print("~~~~~~~~~~~~~~~~~~~~\n")
 
-    def run_all_sessions(self, file: str = __file__) -> None:
+    def run_all_sessions(self) -> None:
         """Run all sessions."""
-        for session in self.get_sessions(file):
-            self.run_session(session, file)
+        for session in self.sessions:
+            self.run_session(session)
 
-    @validate_input_decorator
-    def run_session_input(self, _inputs, file: str = __file__) -> None:
+    @validate_session_input_decorator
+    def run_session_input(self, _inputs) -> None:
         """Run a session based on user input."""
         if self.inputs == ["all"]:
-            self.run_all_sessions(file)
+            self.run_all_sessions()
         else:
             for session in self.inputs:
-                self.run_session(session, file)
+                self.run_session(session)
 
-    def user_select(self, file: str = __file__, debug: bool = False) -> None:
+    def select_year(self) -> None:
+        """Prompt user to select a year."""
+        print("Select a year to run:")
+        for i, year in enumerate(self.years):
+            print(f"{i + 1}. {year}")
+        while True:
+            try:
+                input_str: str = input("Enter year to run: ")
+                self.validate_year_input(input_str)
+                self.sessions = self.get_sessions(self.year)
+                break
+            except ValueError:
+                print("Invalid input. Please try again.")
+                continue
+
+    def select_session(self, debug: bool = False) -> None:
         """Prompt user to select a session."""
         if not debug:
             print("Select a session to run:")
-            for i, session in enumerate(self.get_sessions(file)):
-                print(f"{i + 1}. {session}")
+            for i, session in enumerate(self.sessions):
+                print(f"{i + 1}. {session.name}")
             print("all. Run all sessions")
         while True:
             try:
                 inputs_str: str = input("Enter session(s) to run: ")
                 inputs: list[str] = inputs_str.split(",")
-                self.run_session_input(inputs, file)
+                self.run_session_input(inputs)
                 break
             except ValueError as error:
                 if debug:
@@ -151,7 +195,8 @@ class SessionRunner:
             raise ValueError(f"Invalid session name {session_name}.")
         # create directory
         try:
-            os.makedirs(session_name)
+            # os.makedirs(session_name)
+            (self.year / session_name).mkdir()
         except FileExistsError as exc:
             print("Session name already exists, exiting...")
             raise ValueError(f"Invalid session name {session_name}.") from exc
@@ -168,7 +213,9 @@ class SessionRunner:
         task_name: str = input("Enter task name: ")
         with open("helpers/templates/task.txt", "r", encoding="utf-8") as file:
             task_template: Template = Template(file.read())
-        with open(f"{session}/{task_name}.py", "w", encoding="utf-8") as file:
+        with open(
+            f"{self.year}/{session}/{task_name}.py", "w", encoding="utf-8"
+        ) as file:
             task_doc: str = input("Enter task description: ")
             task_d: dict[str, str] = {
                 "docstring": task_doc,
@@ -207,16 +254,18 @@ if __name__ == "__main__":
             help="create task in existing session",
         )
         args: argparse.Namespace = parser.parse_args()
+        session_runner: SessionRunner = SessionRunner()
+        session_runner.select_year()
         if args.all:
-            SessionRunner().run_all_sessions()
+            session_runner.run_all_sessions()
         elif args.create:
-            SessionRunner().create_session()
+            session_runner.create_session()
         elif args.task:
-            SessionRunner().create_task(args.task)
+            session_runner.create_task(args.task)
         elif args.session:
-            SessionRunner().run_session_input(flatten(args.session))
+            session_runner.run_session_input(flatten(args.session))
         else:
-            SessionRunner().user_select()
+            session_runner.select_session()
     except ValueError as err:
         print(err)
         sys.exit(1)
