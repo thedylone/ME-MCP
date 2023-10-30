@@ -203,18 +203,19 @@ class SessionRunner:
         # create main.py
         with open("helpers/templates/main.txt", "r", encoding="utf-8") as file:
             main_template: Template = Template(file.read())
-        with open(f"{session_name}/main.py", "w", encoding="utf-8") as file:
+        with open(
+            self.year / session_name / "main.py", "w", encoding="utf-8"
+        ) as file:
             session_doc: str = input("Enter session description: ")
             file.write(main_template.substitute(docstring=session_doc))
 
-    @validate_session_decorator
-    def create_task(self, session: str, _file=__file__) -> None:
+    def create_task(self, session: str) -> None:
         """Create a task."""
         task_name: str = input("Enter task name: ")
         with open("helpers/templates/task.txt", "r", encoding="utf-8") as file:
             task_template: Template = Template(file.read())
         with open(
-            f"{self.year}/{session}/{task_name}.py", "w", encoding="utf-8"
+            self.year / session / f"{task_name}.py", "w", encoding="utf-8"
         ) as file:
             task_doc: str = input("Enter task description: ")
             task_d: dict[str, str] = {
