@@ -57,7 +57,10 @@ class Task(TaskBase):
                 if xn[j] <= xp <= xn[j + 1]:
                     dx = xp - xn[j]
                     out.append(
-                        c[j, 0] + c[j, 1] * dx + c[j, 2] * dx**2 + c[j, 3] * dx**3
+                        c[j, 0]
+                        + c[j, 1] * dx
+                        + c[j, 2] * dx**2
+                        + c[j, 3] * dx**3
                     )
                     break
         return out

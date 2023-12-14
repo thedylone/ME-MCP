@@ -6,6 +6,8 @@ Created on Thu Nov 17 18:27:18 2022
 @author: ncinosi
 """
 
+import numpy as np
+
 # Gauss-Legendre quadrature nodes and weights
 tg = np.array([ [0],
      [1/np.sqrt(3), -1/np.sqrt(3)], \
