@@ -41,10 +41,9 @@ class Task(TaskBase):
         self.larger = np.ndarray(
             (m * self.shrunk.shape[0], m * self.shrunk.shape[1], 3)
         )
-        
+
         plt.imshow(self.larger)
         plt.show()
-
 
 
 if __name__ == "__main__":

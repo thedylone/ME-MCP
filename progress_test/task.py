@@ -1,6 +1,5 @@
 from typing import Callable
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def trapz(x: np.ndarray, y: np.ndarray) -> float:
@@ -190,8 +189,8 @@ print(trapz(x, y))
 print("q3")
 print("im kinda off for this qn")
 
-x = np.arange(0, 1+0.01, 0.01)
-y = np.arange(0, 2+0.01, 0.01)
+x = np.arange(0, 1 + 0.01, 0.01)
+y = np.arange(0, 2 + 0.01, 0.01)
 
 
 def double_integral(dx: float) -> float:
@@ -254,6 +253,7 @@ print(lagrangian(2, xp, xn))
 # d^4/dt^4 (e^t + cos(t)^2)
 # What is the value of the derivative at t = 2
 print("q5")
+
 
 def func(t, y):
     return np.exp(t) + np.cos(t) ** 2
