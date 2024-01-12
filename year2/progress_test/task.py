@@ -171,7 +171,7 @@ y = np.linspace(10, 20, 21)
 z = np.ndarray(len(x) + len(y))
 
 z[: len(x)] = x
-z[-len(y) :] = y
+z[-len(y):] = y
 
 print(z)
 
@@ -240,7 +240,7 @@ print("q4")
 # The three points xn = [0,1,2] are used to interpolate with Lagrange
 # polynomials. What are the values of the Lagrange polynomials when
 # interpolating at point xp = 1.5?
-xn = [0, 1, 2]
+xn: list[float] = [0, 1, 2]
 xp = 1.5
 print(lagrangian(0, xp, xn))
 print(lagrangian(1, xp, xn))
