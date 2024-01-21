@@ -216,6 +216,7 @@ class Task(TaskBase):
         """dN/dt = 1.1N - N£"""
         return 1.1 * n - n * p
 
+
 if __name__ == "__main__":
     task: Task = Task("C")
     task.run_tasks()
