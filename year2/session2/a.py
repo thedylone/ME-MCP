@@ -6,18 +6,17 @@ import matplotlib.pyplot as plt
 from helpers.task import TaskBase, task_to_list
 
 
+def trapzeqd(x: np.ndarray, y: np.ndarray) -> float:
+    """Trapezium integration"""
+    return sum(
+        (x[i + 1] - x[i]) * (y[i + 1] + y[i]) / 2 for i in range(len(x) - 1)
+    )
+
+
 class Task(TaskBase):
     """Trapezium rule for functions with equidistant nodes"""
 
     tasklist: list = []
-
-    @staticmethod
-    def trapzeqd(x: np.ndarray, y: np.ndarray) -> float:
-        """Trapezium integration"""
-        return sum(
-            (x[i + 1] - x[i]) * (y[i + 1] + y[i]) / 2
-            for i in range(len(x) - 1)
-        )
 
     @staticmethod
     def func(x: np.ndarray) -> np.ndarray:
@@ -33,7 +32,7 @@ class Task(TaskBase):
     def integrate(b: float, n: int) -> float:
         """Integrate with custom number of nodes"""
         x: np.ndarray = np.linspace(0, b, n)
-        return Task.trapzeqd(x, Task.func(x))
+        return trapzeqd(x, Task.func(x))
 
     @task_to_list(tasklist)
     def task1(self) -> dict[str, float]:

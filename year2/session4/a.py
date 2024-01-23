@@ -5,18 +5,18 @@ import numpy as np
 from helpers.task import TaskBase, task_to_list
 
 
+def simpson(h: float, yn: list[float] | np.ndarray) -> float:
+    """Simpson integration"""
+    return sum(
+        h / 3 * (yn[i] + 4 * yn[i + 1] + yn[i + 2])
+        for i in range(0, len(yn) - 2, 2)
+    )
+
+
 class Task(TaskBase):
     """Simpson Integration and Adaptive Simpson Integration"""
 
     tasklist: list = []
-
-    @staticmethod
-    def simpson(h: float, yn: list[float] | np.ndarray) -> float:
-        """Simpson integration"""
-        return sum(
-            h / 3 * (yn[i] + 4 * yn[i + 1] + yn[i + 2])
-            for i in range(0, len(yn) - 2, 2)
-        )
 
     def f(self, x: np.ndarray) -> np.ndarray:
         """Function to integrate"""
@@ -33,7 +33,7 @@ class Task(TaskBase):
         for h in steps:
             x = np.arange(0, 1 + h, h)
             y = self.f(x)
-            integral = self.simpson(h, y)
+            integral = simpson(h, y)
             print(f"Integral for h = {h} is {integral}")
 
     @task_to_list(tasklist)
@@ -52,7 +52,7 @@ class Task(TaskBase):
                 nodes *= 2
                 x = np.linspace(0, 1, nodes + 1)
                 y = self.f(x)
-                new = self.simpson(1 / nodes, y)
+                new = simpson(1 / nodes, y)
                 # error = abs(integral - np.arctan(1))
                 error = 1 / 15 * (abs(integral - new))
                 integral = new

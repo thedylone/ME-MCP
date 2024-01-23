@@ -16,7 +16,12 @@ def ode_bc(
     N: int,
     R: np.ndarray,
 ) -> tuple:
-    """Solve a boundary value problem for a second-order ODE."""
+    """Modify the function, myodebc, to accommodate all the various types
+    of boundary conditions. myodebc still receives the boundaries of the
+    domain a and b, the boundary conditions at these points BC_a and BC_b,
+    and the number N of desired intervals. In addition, it receives an
+    array R of length 4, with the values of r0, r1, r2, r3, specifying
+    the type of boundary conditions."""
     x: np.ndarray
     x, _h = np.linspace(a, b, N + 1, retstep=True)
     h = float(_h)

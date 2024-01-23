@@ -10,7 +10,12 @@ from helpers.task import TaskBase, task_to_list
 def ode_bc(
     ode: Callable, a: float, b: float, y_a: float, y_b: float, N: int
 ) -> tuple:
-    """Solve a boundary value problem for a second-order ODE."""
+    """Write a function, myodebc, that receives the boundaries of the
+    domain a and b, the value of the solutions at these points, y(a) = y_a
+    and y(b) = y_b, and the number N of desired intervals. myodebc returns
+    the grid points x_i and the solution y_i(x_i) at the grid points.
+    The ODE is defined through an external function, myfunc, that receives
+    the value of x and returns the values of f(x), g(x) and p(x)."""
     x: np.ndarray
     x, _h = np.linspace(a, b, N + 1, retstep=True)
     h = float(_h)

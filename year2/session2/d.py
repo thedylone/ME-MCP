@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from helpers.task import TaskBase, task_to_list
-from year2.session2.c import Task as TaskC
+from year2.session2.c import trapz
 
 
 class Task(TaskBase):
@@ -36,10 +36,14 @@ class Task(TaskBase):
             for line in file:
                 pts: list[str] = line.split(",")
                 self.north_bank = np.append(
-                    self.north_bank, [[float(pts[0]), float(pts[1])]], axis=0
+                    self.north_bank,
+                    np.array([[float(pts[0]), float(pts[1])]]),
+                    axis=0,
                 )
                 self.south_bank = np.append(
-                    self.south_bank, [[float(pts[2]), float(pts[3])]], axis=0
+                    self.south_bank,
+                    np.array([[float(pts[2]), float(pts[3])]]),
+                    axis=0,
                 )
         plt.plot(self.north_bank[:, 0], self.north_bank[:, 1])
         plt.plot(self.south_bank[:, 0], self.south_bank[:, 1])
@@ -49,12 +53,8 @@ class Task(TaskBase):
     @task_to_list(tasklist)
     def task2(self) -> dict[str, float]:
         """Compute the surface occupied by the basin in km^2."""
-        north_area: float = TaskC.trapz(
-            self.north_bank[:, 0], self.north_bank[:, 1]
-        )
-        south_area: float = TaskC.trapz(
-            self.south_bank[:, 0], self.south_bank[:, 1]
-        )
+        north_area: float = trapz(self.north_bank[:, 0], self.north_bank[:, 1])
+        south_area: float = trapz(self.south_bank[:, 0], self.south_bank[:, 1])
         area: float = (north_area - south_area) / 1e6
         return {"area": area}
 

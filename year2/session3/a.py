@@ -6,6 +6,37 @@ import matplotlib.pyplot as plt
 from helpers.task import TaskBase, task_to_list
 
 
+def lagrangian(j: int, xp: float, xn: list[float] | np.ndarray) -> float:
+    """Write a function, Lagrangian, to compute the Lagrangian polynomial
+    j at a point xp, with given nodes xn.
+    The function receives the values j, xp and the array of nodes xn, and
+    returns the value:
+    Lj(xp) = product_{k=0, k!=j}^n (xp - xk) / (xj - xk)"""
+    out = 1
+    for k, xk in enumerate(xn):
+        if k != j:
+            out *= (xp - xk) / (xn[j] - xk)
+
+    return out
+
+
+def lagr_interp(
+    xn: list[float] | np.ndarray,
+    yn: list[float] | np.ndarray,
+    x: list[float] | np.ndarray,
+) -> list[float]:
+    """Write a function, LagrInterp, that receives the sets of know values,
+    xn and yn, the points to be interpolated x, and returns the
+    interpolated values y, by using Lagrangian polynomials."""
+    out = []
+    for xp in x:
+        y = 0
+        for j in range(len(xn)):
+            y += yn[j] * lagrangian(j, xp, xn)
+        out.append(y)
+    return out
+
+
 class Task(TaskBase):
     """Lagrangian polynomials and interpolation"""
 
@@ -15,20 +46,6 @@ class Task(TaskBase):
     p2: list[float] = []
     p3: list[float] = []
 
-    @staticmethod
-    def lagrangian(j: int, xp: float, xn: list[float] | np.ndarray) -> float:
-        """Write a function, Lagrangian, to compute the Lagrangian polynomial
-        j at a point xp, with given nodes xn.
-        The function receives the values j, xp and the array of nodes xn, and
-        returns the value:
-        Lj(xp) = product_{k=0, k!=j}^n (xp - xk) / (xj - xk)"""
-        out = 1
-        for k, xk in enumerate(xn):
-            if k != j:
-                out *= (xp - xk) / (xn[j] - xk)
-
-        return out
-
     @task_to_list(tasklist)
     def task1(self) -> None:
         """Write a function, Lagrangian, to compute the Lagrangian polynomial
@@ -36,23 +53,6 @@ class Task(TaskBase):
         The function receives the values j, xp and the array of nodes xn, and
         returns the value:
         Lj(xp) = product_{k=0, k!=j}^n (xp - xk) / (xj - xk)"""
-
-    @staticmethod
-    def lagr_interp(
-        xn: list[float] | np.ndarray,
-        yn: list[float] | np.ndarray,
-        x: list[float] | np.ndarray,
-    ) -> list[float]:
-        """Write a function, LagrInterp, that receives the sets of know values,
-        xn and yn, the points to be interpolated x, and returns the
-        interpolated values y, by using Lagrangian polynomials."""
-        out = []
-        for xp in x:
-            y = 0
-            for j in range(len(xn)):
-                y += yn[j] * Task.lagrangian(j, xp, xn)
-            out.append(y)
-        return out
 
     @task_to_list(tasklist)
     def task2(self) -> None:
@@ -67,17 +67,17 @@ class Task(TaskBase):
         # p1(x)
         xn = np.linspace(1, 2, 2)
         yn = np.sin(xn)
-        self.p1 = Task.lagr_interp(xn, yn, x)
+        self.p1 = lagr_interp(xn, yn, x)
 
         # p2(x)
         xn = np.linspace(1, 2, 3)
         yn = np.sin(xn)
-        self.p2 = Task.lagr_interp(xn, yn, x)
+        self.p2 = lagr_interp(xn, yn, x)
 
         # p3(x)
         xn = np.linspace(1, 2, 4)
         yn = np.sin(xn)
-        self.p3 = Task.lagr_interp(xn, yn, x)
+        self.p3 = lagr_interp(xn, yn, x)
 
     @task_to_list(tasklist)
     def task3(self) -> None:
@@ -133,7 +133,7 @@ class Task(TaskBase):
         for j in range(1, 15):
             xn = np.linspace(1, 2, j + 1)
             yn = np.sin(xn)
-            p = Task.lagr_interp(xn, yn, [np.pi / 2])[0]
+            p = lagr_interp(xn, yn, [np.pi / 2])[0]
             if j > 1:
                 errors.append(p - prev_p)
             prev_p = p

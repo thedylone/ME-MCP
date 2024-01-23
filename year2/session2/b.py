@@ -3,7 +3,7 @@
 import numpy as np
 
 from helpers.task import task_to_list
-from year2.session2.a import Task as TaskA
+from year2.session2.a import Task as TaskA, trapzeqd
 
 
 class Task(TaskA):
@@ -20,7 +20,7 @@ class Task(TaskA):
     def integrate(b: float, n: int) -> float:
         """Integrate with custom number of nodes"""
         x: np.ndarray = np.linspace(0, b, n)
-        return Task.trapzeqd(x, Task.func(x))
+        return trapzeqd(x, Task.func(x))
 
     @task_to_list(tasklist)
     def task4(self) -> None:
