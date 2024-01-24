@@ -4,7 +4,7 @@ the Royal Albert Hall"""
 import numpy as np
 import matplotlib.pyplot as plt
 from helpers.task import TaskBase, task_to_list
-from year2.session2.c import Task as TaskC
+from year2.session2.c import trapz
 
 
 class Task(TaskBase):
@@ -39,8 +39,8 @@ class Task(TaskBase):
             )
             z_values[z_values < 0] = 0
             z_values = np.sqrt(z_values)
-            g_x[i] = TaskC.trapz(y_domain, z_values)
-        return TaskC.trapz(x_domain, g_x)
+            g_x[i] = trapz(y_domain, z_values)
+        return trapz(x_domain, g_x)
 
     @task_to_list(tasklist)
     def task1(self) -> dict[str, float]:

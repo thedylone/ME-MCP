@@ -7,11 +7,6 @@ from helpers.task import TaskBase, task_to_list
 from year2.session5.a import Task as TaskA
 
 
-def ode(t: float, y: float) -> float:
-    """ODE to solve"""
-    return -2 * y * t - 2 * t**3
-
-
 class Task(TaskBase):
     """Implicit methods: Backward Euler"""
 
@@ -29,6 +24,11 @@ class Task(TaskBase):
         self.rk4 = explicit_task.task2()
         self.bwd_euler_t: np.ndarray
         self.bwd_euler_y: np.ndarray
+
+    @staticmethod
+    def ode(t: float, y: float) -> float:
+        """ODE to solve"""
+        return -2 * y * t - 2 * t**3
 
     @staticmethod
     def bwd_euler(
